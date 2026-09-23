@@ -29,7 +29,7 @@ export function MethodologyContent() {
 
       <section className={styles.section}>
         <h2>Показатели узла</h2>
-        <div className={styles.tableWrap}>
+        <div className={styles.tableWrap} role="region" aria-label="Показатели узла" tabIndex={0}>
           <table>
             <thead><tr><th>Показатель</th><th>Значение</th></tr></thead>
             <tbody>
@@ -46,7 +46,7 @@ export function MethodologyContent() {
       <section className={styles.section}>
         <h2>Правила ролей</h2>
         <p>Применяется первое подходящее правило сверху вниз. Значение role_score — выраженность признаков, не вероятность.</p>
-        <div className={styles.tableWrap}>
+        <div className={styles.tableWrap} role="region" aria-label="Условия назначения ролей" tabIndex={0}>
           <table>
             <thead><tr><th>Правило</th><th>Роль</th><th>Условие</th></tr></thead>
             <tbody>
@@ -67,7 +67,8 @@ export function MethodologyContent() {
         <p>Ранг строится по взвешенным перцентилям наблюдаемых метрик и весу выбранной роли:</p>
         <pre className={styles.formula}>priority = 0,30·P(I) + 0,20·P(Uin) + 0,20·P(B) + 0,20·P(S) + 0,10·W(role)</pre>
         <p>
-          P(x) — доля узлов со значением ниже текущего. W(role): координатор 1,0; консолидатор 0,95;
+          P(x)=0 при x ≤ 0 или N ≤ 1; иначе P(x) — число узлов u с xᵤ &lt; x, делённое на N−1.
+          W(role): координатор 1,0; консолидатор 0,95;
           распределитель 0,85; транзитный узел 0,65; конечный узел 0,55; периферийный 0,10.
         </p>
         <p>
@@ -79,7 +80,9 @@ export function MethodologyContent() {
       <section className={styles.section}>
         <h2>Кластеры и направление</h2>
         <p>
-          Кластеры считаются Louvain на неориентированной проекции с фиксированным seed=42.
+          Для неориентированной проекции сначала складываются суммы обоих направлений между парой узлов,
+          вес равен log1p этой суммы, self-loops исключаются. Louvain запускается по компонентам с рёбрами,
+          resolution=1, seed=42.
           Betweenness направленная, нормализованная, с k=min(128,N), seed=42 и без денежного веса.
           Изолированный узел получает отдельный кластер. Направление и суммы рёбер на графе остаются исходными.
         </p>

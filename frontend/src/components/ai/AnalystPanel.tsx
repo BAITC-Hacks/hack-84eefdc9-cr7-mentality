@@ -38,14 +38,13 @@ export function AnalystPanel({ analysisId, focusGids, onSelectGid }: AnalystPane
         <label htmlFor="assistant-question">Вопрос аналитику</label>
         <textarea
           id="assistant-question"
-          maxLength={1000}
           onChange={(event) => setQuestion(event.target.value)}
           placeholder="Почему этот узел стоит проверить?"
           rows={3}
           value={question}
         />
         <div className={styles.formFooter}>
-          <span className={styles.counter}>{question.length}/1000</span>
+          <span className={styles.counter}>{Array.from(question).length}/1000</span>
           <button
             className={styles.submit}
             disabled={isLoading || focusGids.length === 0 || focusGids.length > 5}

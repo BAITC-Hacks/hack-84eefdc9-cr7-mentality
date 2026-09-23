@@ -54,6 +54,11 @@
   border-radius: 6px;
 }
 
+.tableWrap:focus-visible {
+  outline: 3px solid #3979a8;
+  outline-offset: 2px;
+}
+
 .tableWrap table {
   width: 100%;
   border-collapse: collapse;

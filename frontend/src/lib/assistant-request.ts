@@ -15,9 +15,10 @@ export function buildAssistantRequest(
 ): AssistantRequest | { error: AssistantRequestError } {
   const question = questionInput.trim();
   const focus_gids = [...new Set(selectedGids)];
+  const questionLength = Array.from(question).length;
 
   if (!question) return { error: "question_required" };
-  if (question.length > 1000) return { error: "question_too_long" };
+  if (questionLength > 1000) return { error: "question_too_long" };
   if (focus_gids.length === 0) return { error: "select_node" };
   if (focus_gids.length > 5) return { error: "too_many_nodes" };
 
