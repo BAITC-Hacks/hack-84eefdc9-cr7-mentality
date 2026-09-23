@@ -16,7 +16,8 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
 
-from .ai import explain
+from .ai import explain, fallback
+from .llm_budget import LLMBudget
 from .contracts import (
     AnalyzeRequest, AnalyzeResponse, AssistantRequest, AssistantResponse,
     DashboardResponse, ErrorResponse, GraphQuery, GraphResponse,
@@ -59,6 +60,7 @@ def _origins() -> list[str]:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.pipeline_lock = asyncio.Lock()
+    app.state.llm_budget = LLMBudget.from_environment()
     app.state.data_dir = _configured_path("DATA_DIR", DEFAULT_DATA_DIR)
     app.state.out_dir = _configured_path("ARTIFACTS_DIR", DEFAULT_OUT_DIR)
     app.state.snapshot = await run_in_threadpool(run_pipeline, app.state.data_dir, app.state.out_dir, 42)
@@ -177,7 +179,22 @@ async def assistant(analysis_id: str, body: AssistantRequest, request: Request) 
             raise APIError(404, "GID_NOT_FOUND", "Узел отсутствует в этом анализе.")
     facts = assistant_facts(snapshot, body.focus_gids)
     limitations = [warning["message"] for warning in snapshot.dashboard["warnings"]]
-    return await explain(snapshot.analysis_id, body, facts, limitations)
+    enabled = os.getenv("LLM_ENABLED", "false").lower() == "true"
+    configured = bool(os.getenv("OPENAI_API_KEY") and os.getenv("OPENAI_MODEL"))
+    if not enabled or not configured:
+        return await explain(snapshot.analysis_id, body, facts, limitations)
+    budget: LLMBudget = request.app.state.llm_budget
+    if not budget.try_acquire():
+        answer = fallback(facts)
+        answer.summary = "Достигнут лимит запросов к ИИ. Повторите через минуту; рассчитанные признаки доступны ниже."
+        return AssistantResponse(
+            analysis_id=snapshot.analysis_id, mode="fallback", fallback_reason="unavailable",
+            answer=answer, evidence=facts,
+        )
+    try:
+        return await explain(snapshot.analysis_id, body, facts, limitations)
+    finally:
+        budget.release()
 
 
 @app.get("/api/v1/analyses/{analysis_id}/exports/{filename}")

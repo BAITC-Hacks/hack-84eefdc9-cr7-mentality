@@ -37,7 +37,7 @@ def fetch(base_url: str, path: str, *, body: dict | None = None, origin: str | N
         raise RuntimeError(f"Cannot reach {base_url}: {exc.reason}") from exc
 
 
-def check(base_url: str, gid: str | None, origin: str | None) -> None:
+def check(base_url: str, gid: str | None, origin: str | None, require_live_ai: bool = False) -> None:
     health = fetch(base_url, "/healthz", origin=origin)
     assert health["status"] == "ok", f"API is not ready: {health}"
     if origin:
@@ -80,6 +80,8 @@ def check(base_url: str, gid: str | None, origin: str | None) -> None:
         "focus_gids": [focus],
     }, origin=origin)
     assert assistant["mode"] in {"live", "fallback"}
+    if require_live_ai:
+        assert assistant["mode"] == "live", f"Live AI required; fallback_reason={assistant.get('fallback_reason')}"
     assert assistant["answer"]["summary"] and assistant["evidence"]
     evidence_ids = {fact["id"] for fact in assistant["evidence"]}
     assert all(set(item["evidence_ids"]) <= evidence_ids for item in assistant["answer"]["findings"])
@@ -93,6 +95,8 @@ def check(base_url: str, gid: str | None, origin: str | None) -> None:
 
     print(f"PASS analysis={analysis_id} nodes=2248 edges=3119 focus_gid={focus}")
     print(f"PASS graph_nodes={len(graph['nodes'])} graph_edges={len(graph['edges'])} assistant={assistant['mode']}")
+    if assistant["mode"] == "fallback":
+        print(f"INFO assistant fallback_reason={assistant.get('fallback_reason')}")
     print("PASS CSV exports: nodes_roles.csv, clusters.csv, top_nodes.csv")
     if origin:
         print(f"PASS CORS origin={origin}")
@@ -103,8 +107,9 @@ def main() -> None:
     parser.add_argument("--base-url", default="http://localhost:8000", help="Backend URL, without trailing slash")
     parser.add_argument("--gid", help="Optional gid named by the jury")
     parser.add_argument("--origin", help="Optional frontend origin to validate CORS")
+    parser.add_argument("--require-live-ai", action="store_true", help="Fail if OpenAI is unavailable or disabled")
     args = parser.parse_args()
-    check(args.base_url.rstrip("/"), args.gid, args.origin)
+    check(args.base_url.rstrip("/"), args.gid, args.origin, args.require_live_ai)
 
 
 if __name__ == "__main__":

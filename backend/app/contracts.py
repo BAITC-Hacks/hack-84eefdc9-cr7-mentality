@@ -2,9 +2,24 @@
 from datetime import date
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field
 
-Gid = Annotated[str, Field(pattern=r"^-?(0|[1-9][0-9]*)$")]
+
+def _validate_gid(value: str) -> str:
+    if not -(2 ** 63) <= int(value) <= 2 ** 63 - 1:
+        raise ValueError("gid must be within the signed int64 range")
+    return value
+
+
+Gid = Annotated[
+    str,
+    Field(
+        pattern=r"^-?(0|[1-9][0-9]*)$",
+        max_length=20,
+        description="Signed int64 identifier encoded as a decimal string, from -9223372036854775808 to 9223372036854775807.",
+    ),
+    AfterValidator(_validate_gid),
+]
 Money = Annotated[str, Field(pattern=r"^[0-9]+\.[0-9]{2}$")]
 Score = Annotated[float, Field(ge=0, le=1, allow_inf_nan=False)]
 Count = Annotated[int, Field(ge=0)]

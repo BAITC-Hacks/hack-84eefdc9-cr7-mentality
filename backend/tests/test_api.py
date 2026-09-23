@@ -3,6 +3,7 @@
 from pathlib import Path
 
 from fastapi.testclient import TestClient
+import pytest
 
 from app.contracts import AssistantResponse, DashboardResponse, GraphResponse
 from app.main import app
@@ -55,3 +56,27 @@ def test_analyst_flow_and_isolated_gid(tmp_path: Path, monkeypatch) -> None:
             assert export.status_code == 200
             assert "text/csv" in export.headers["content-type"]
             assert export.content
+
+
+@pytest.mark.parametrize("invalid_gid", [
+    "9" * 5000,
+    "9223372036854775808",
+    "-9223372036854775809",
+])
+def test_invalid_gid_returns_validation_error(tmp_path: Path, monkeypatch, invalid_gid: str) -> None:
+    monkeypatch.setenv("LLM_ENABLED", "false")
+    monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path))
+    with TestClient(app) as client:
+        analysis = client.post("/api/v1/analyze", json={"dataset_id": "hackalem-july-2026"})
+        assert analysis.status_code == 200
+        url = f"/api/v1/analyses/{analysis.json()['analysis_id']}"
+
+        graph = client.get(f"{url}/graph", params={"focus_gid": invalid_gid})
+        assert graph.status_code == 422
+        assert graph.json()["error"]["code"] == "INVALID_INPUT"
+
+        assistant = client.post(f"{url}/assistant", json={
+            "question": "Что проверить?", "focus_gids": [invalid_gid],
+        })
+        assert assistant.status_code == 422
+        assert assistant.json()["error"]["code"] == "INVALID_INPUT"

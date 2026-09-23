@@ -1,9 +1,10 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
-  "build": { "buildCommand": "npm ci && npm run build" },
+  "build": { "builder": "RAILPACK", "buildCommand": "npm run build" },
   "deploy": {
     "startCommand": "npm run start -- --hostname 0.0.0.0 --port $PORT",
     "healthcheckPath": "/workspace",
+    "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE"
   }
 }

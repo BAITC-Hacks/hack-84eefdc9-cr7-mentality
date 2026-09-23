@@ -2,6 +2,7 @@
 
 import { PreferencesControls } from "@/components/preferences/PreferencesControls";
 import { useI18n } from "@/components/preferences/PreferencesProvider";
+import { demoAvailable, workspacePreviewHref } from "@/lib/demo";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight, ChartNoAxesCombined, CircleCheck, GitBranch, Network, ScanSearch, ShieldCheck } from "lucide-react";
@@ -31,7 +32,7 @@ function Header() {
   return <header className={styles.header}>
     <Link className={styles.logo} href="/" aria-label={t("brand.home")}><span className={styles.logoMark} aria-hidden="true"><i /><i /><i /></span><span>{t("brand.first")}<span className={styles.logoAccent}>{t("brand.second")}</span></span></Link>
     <nav className={styles.mainNav} aria-label={t("nav.main")}><a href="#features">{t("nav.features")}</a><a href="#services">{t("nav.howItWorks")}</a><a href="#audience">{t("nav.audience")}</a><Link href="/methodology">{t("nav.methodology")}</Link></nav>
-    <div className={styles.headerActions}><PreferencesControls /><Link className={styles.headerQuiet} href="/workspace?demo=1">{t("action.viewDemo")}</Link><ActionLink href="/workspace">{t("action.start")} <ArrowUpRight size={16} /></ActionLink></div>
+    <div className={styles.headerActions}><PreferencesControls />{demoAvailable && <Link className={styles.headerQuiet} href={workspacePreviewHref}>{t("action.viewDemo")}</Link>}<ActionLink href="/workspace">{t("action.start")} <ArrowUpRight size={16} /></ActionLink></div>
   </header>;
 }
 
@@ -39,7 +40,7 @@ function FilterNav() {
   const { t } = useI18n("landing");
   return <nav className={styles.filterNav} aria-label={t("nav.sections")}>
     <div className={styles.filterScroll}>{filters.map((filter, index) => <Link className={`${styles.filter} ${index === 0 ? styles.filterActive : ""}`} href={filter.href} key={filter.label}>{t(filter.label)}</Link>)}</div>
-    <Link className={styles.filterAll} href="/workspace?demo=1">{t("action.openDemo")} <ArrowRight size={15} /></Link>
+    <Link className={styles.filterAll} href={workspacePreviewHref}>{t(demoAvailable ? "action.openDemo" : "action.workspace")} <ArrowRight size={15} /></Link>
   </nav>;
 }
 
@@ -59,7 +60,7 @@ function Features() {
 
 function HelpBanner() {
   const { t } = useI18n("landing");
-  return <section className={styles.helpBanner} aria-label={t("banner.label")}><div className={styles.helpMessage}><span className={styles.helpIcon}><GitBranch size={22} /></span><div><strong>{t("banner.title")}</strong><span>{t("banner.description")}</span></div></div><ActionLink href="/workspace?demo=1">{t("action.tryDemo")} <ArrowUpRight size={16} /></ActionLink></section>;
+  return <section className={styles.helpBanner} aria-label={t("banner.label")}><div className={styles.helpMessage}><span className={styles.helpIcon}><GitBranch size={22} /></span><div><strong>{t("banner.title")}</strong><span>{t("banner.description")}</span></div></div><ActionLink href={workspacePreviewHref}>{t(demoAvailable ? "action.tryDemo" : "action.start")} <ArrowUpRight size={16} /></ActionLink></section>;
 }
 
 function ServiceVisual({ kind }: { kind: "graph" | "insights" }) {
@@ -70,7 +71,7 @@ function Services() {
   const { t } = useI18n("landing");
   return <section className={styles.services} id="services" aria-label={t("services.label")}>
     <article className={`${styles.serviceCard} ${styles.serviceDark}`}><div className={styles.serviceCopy}><span className={styles.outlineTag}>{t("services.graph.tag")}</span><h2>{t("services.graph.title")}</h2><p>{t("services.graph.description")}</p></div><ServiceVisual kind="graph" /><Link className={styles.arrowButton} href="/workspace" aria-label={t("services.graph.action")}><ArrowUpRight size={21} /></Link></article>
-    <article className={`${styles.serviceCard} ${styles.serviceLight}`}><div className={styles.serviceCopy}><span className={styles.outlineTag}>{t("services.risks.tag")}</span><h2>{t("services.risks.title")}</h2><p>{t("services.risks.description")}</p></div><ServiceVisual kind="insights" /><Link className={styles.arrowButton} href="/workspace?demo=1" aria-label={t("services.risks.action")}><ArrowUpRight size={21} /></Link></article>
+    <article className={`${styles.serviceCard} ${styles.serviceLight}`}><div className={styles.serviceCopy}><span className={styles.outlineTag}>{t("services.risks.tag")}</span><h2>{t("services.risks.title")}</h2><p>{t("services.risks.description")}</p></div><ServiceVisual kind="insights" /><Link className={styles.arrowButton} href={workspacePreviewHref} aria-label={t("services.risks.action")}><ArrowUpRight size={21} /></Link></article>
   </section>;
 }
 

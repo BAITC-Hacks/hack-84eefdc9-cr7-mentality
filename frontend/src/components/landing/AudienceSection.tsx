@@ -4,13 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Building2, UserRound } from "lucide-react";
 import { useI18n } from "@/components/preferences/PreferencesProvider";
+import { workspacePreviewHref } from "@/lib/demo";
 import styles from "./landing.module.css";
 
 type Audience = "all" | "people" | "business";
 
 const tabs: Audience[] = ["all", "people", "business"];
 const cards = [
-  { value: "people" as const, icon: UserRound, href: "/workspace?demo=1" },
+  { value: "people" as const, icon: UserRound, href: workspacePreviewHref },
   { value: "business" as const, icon: Building2, href: "/workspace" },
 ];
 

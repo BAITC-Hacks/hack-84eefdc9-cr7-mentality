@@ -8,6 +8,7 @@ import {
   isAbort,
 } from "@/lib/api";
 import { canonicalGid } from "@/lib/format";
+import { demoAvailable } from "@/lib/demo";
 import {
   clusterIdFromParam,
   initialWorkspace,
@@ -15,9 +16,7 @@ import {
   type WorkspaceAction,
 } from "./types";
 
-export const demoAvailable =
-  process.env.NODE_ENV !== "production" &&
-  process.env.NEXT_PUBLIC_ENABLE_DEMO === "true";
+export { demoAvailable } from "@/lib/demo";
 function useResource<T>(
   key: string | null,
   loader: (signal: AbortSignal) => Promise<T>,
