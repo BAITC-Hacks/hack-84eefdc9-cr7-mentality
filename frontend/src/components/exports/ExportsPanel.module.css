@@ -1,0 +1,133 @@
+.page {
+  width: min(100% - 40px, 960px);
+  margin: 0 auto;
+  padding: 48px 0 64px;
+  color: #172f42;
+  font: 400 14px/1.5 Arial, sans-serif;
+}
+
+.header {
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.eyebrow {
+  margin: 0 0 5px;
+  color: #4f6e84;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  margin: 0;
+  color: #18354b;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.header > p:last-child {
+  margin: 8px 0 0;
+  color: #5a7182;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 18px 0;
+  color: #546c7d;
+  font-size: 13px;
+}
+
+.meta strong {
+  margin-left: 4px;
+  color: #263f52;
+  font-weight: 600;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #dce5ec;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 4px;
+  border-bottom: 1px solid #dce5ec;
+}
+
+.row h2 {
+  margin: 0;
+  color: #1d3b53;
+  font-size: 15px;
+}
+
+.row p {
+  max-width: 640px;
+  margin: 4px 0;
+  color: #5c7080;
+}
+
+.row code {
+  color: #40596c;
+  font-size: 12px;
+}
+
+.download,
+.action {
+  flex: 0 0 auto;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 13px;
+  color: #18364d;
+  background: #c7e4ff;
+  border: 1px solid #94c2e5;
+  border-radius: 6px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.download:hover,
+.action:hover { background: #b3d9f7; }
+
+.download:focus-visible,
+.action:focus-visible {
+  outline: 3px solid #3979a8;
+  outline-offset: 2px;
+}
+
+.note,
+.emptyNote,
+.status,
+.error { margin: 18px 0 0; }
+.note,
+.emptyNote,
+.status { color: #5c7181; }
+.error { color: #9a3029; }
+
+.empty {
+  max-width: 520px;
+  padding: 24px 0;
+}
+
+.empty h2 {
+  margin: 0;
+  color: #18354b;
+  font-size: 18px;
+}
+
+.empty p { color: #5b7182; }
+
+@media (max-width: 600px) {
+  .page { width: min(100% - 32px, 960px); padding-top: 32px; }
+  .row { align-items: flex-start; flex-direction: column; gap: 12px; }
+}

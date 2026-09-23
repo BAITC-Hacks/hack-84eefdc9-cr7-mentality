@@ -1,0 +1,270 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  padding: 20px;
+  color: #162b3b;
+  background: #fff;
+  border: 1px solid #dce5ed;
+  border-radius: 8px;
+  font: 400 14px/1.5 Arial, sans-serif;
+}
+
+.header,
+.answerHeading,
+.formFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.eyebrow,
+.counter,
+.muted {
+  margin: 0;
+  color: #657789;
+  font-size: 12px;
+}
+
+.header h3,
+.answerHeading h4,
+.finding h4,
+.answerSection h4 {
+  margin: 2px 0 0;
+  color: #162b3b;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.scope {
+  padding: 5px 9px;
+  color: #244761;
+  background: #e9f4ff;
+  border: 1px solid #c7e4ff;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.form {
+  display: grid;
+  gap: 8px;
+}
+
+.form label {
+  color: #283f52;
+  font-weight: 600;
+}
+
+.form textarea {
+  width: 100%;
+  min-height: 84px;
+  resize: vertical;
+  padding: 10px 12px;
+  color: #162b3b;
+  background: #fff;
+  border: 1px solid #bac9d6;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.form textarea:focus-visible,
+.submit:focus-visible,
+.evidenceLink:focus-visible {
+  outline: 3px solid #3979a8;
+  outline-offset: 2px;
+}
+
+.form textarea::placeholder {
+  color: #728397;
+}
+
+.submit {
+  min-height: 40px;
+  padding: 8px 14px;
+  color: #183246;
+  background: #c7e4ff;
+  border: 1px solid #99c8ee;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.submit:hover:not(:disabled) {
+  background: #b3d9f7;
+}
+
+.submit:disabled {
+  color: #687887;
+  background: #edf1f4;
+  border-color: #d8e0e7;
+  cursor: not-allowed;
+}
+
+.hint,
+.error,
+.fallbackNote {
+  margin: 0;
+  color: #536879;
+  font-size: 13px;
+}
+
+.error,
+.errorBox {
+  color: #8d2525;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #40596d;
+  padding: 12px;
+  background: #f4f9fd;
+  border-radius: 6px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #b7cedf;
+  border-top-color: #386b91;
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.answer {
+  display: grid;
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e1e8ee;
+}
+
+.liveMode,
+.fallbackMode {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.liveMode {
+  color: #245d48;
+  background: #e8f5ee;
+}
+
+.fallbackMode {
+  color: #77531c;
+  background: #fff3d8;
+}
+
+.summary {
+  margin: 0;
+  color: #263f52;
+  font-size: 14px;
+}
+
+.finding {
+  padding: 12px;
+  background: #f5faff;
+  border: 1px solid #d8eafa;
+  border-radius: 6px;
+}
+
+.finding h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.evidenceList,
+.answerSection ul {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.evidenceLink {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 9px;
+  color: #24465f;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #d6e3ec;
+  border-radius: 5px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.evidenceLink:hover {
+  border-color: #85b9e2;
+  background: #f5faff;
+}
+
+.evidenceGid {
+  flex: 0 0 auto;
+  color: #526a7c;
+  font-size: 12px;
+}
+
+.answerSection h4 {
+  font-size: 13px;
+}
+
+.answerSection ul {
+  margin-top: 6px;
+  padding-left: 17px;
+  list-style: disc;
+  color: #445a6c;
+  font-size: 13px;
+}
+
+.disclaimer {
+  margin: 0;
+  padding: 9px 10px;
+  color: #566a79;
+  background: #f4f6f8;
+  border-left: 3px solid #b4c4d1;
+  font-size: 12px;
+}
+
+.errorBox {
+  padding: 12px;
+  background: #fff6f5;
+  border: 1px solid #f0ceca;
+  border-radius: 6px;
+}
+
+.errorBox p {
+  margin: 4px 0 0;
+}
+
+@media (max-width: 520px) {
+  .panel {
+    padding: 15px;
+  }
+
+  .evidenceLink {
+    flex-direction: column;
+    gap: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 1800ms;
+  }
+}
