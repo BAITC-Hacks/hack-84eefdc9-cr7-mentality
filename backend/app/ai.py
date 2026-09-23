@@ -1,4 +1,4 @@
-"""Optional OpenAI adapter. Copy next to contracts.py and system_prompt.txt.
+"""Optional OpenAI adapter over the server-computed AML facts.
 
 Dependencies: openai, pydantic. No API call is made when importing this module.
 The caller builds facts from its own immutable analysis snapshot, never from

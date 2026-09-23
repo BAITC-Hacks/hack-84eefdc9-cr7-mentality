@@ -1,0 +1,14 @@
+flowchart LR
+  A[3 Parquet files] --> B[Input validation]
+  B --> C[Directed observed graph]
+  C --> D[Node metrics and coverage flags]
+  D --> E[Explainable role rules and priority]
+  C --> F[Louvain communities]
+  E --> G[Immutable analysis snapshot]
+  F --> G
+  G --> H[3 CSV exports]
+  G --> I[FastAPI dashboard and graph]
+  G --> J[Selected server facts]
+  J --> K[Optional OpenAI explanation]
+  I --> L[Analyst UI]
+  K --> L
