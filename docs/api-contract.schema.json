@@ -1,0 +1,1187 @@
+{
+  "$defs": {
+    "AIAnswer": {
+      "additionalProperties": false,
+      "description": "The only object the LLM is allowed to generate.",
+      "properties": {
+        "status": {
+          "enum": [
+            "ok",
+            "insufficient_data"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/Finding"
+          },
+          "title": "Findings",
+          "type": "array"
+        },
+        "missing_data": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Data",
+          "type": "array"
+        },
+        "next_steps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Next Steps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "summary",
+        "findings",
+        "missing_data",
+        "next_steps"
+      ],
+      "title": "AIAnswer",
+      "type": "object"
+    },
+    "AnalyzeRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "dataset_id": {
+          "const": "hackalem-july-2026",
+          "title": "Dataset Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dataset_id"
+      ],
+      "title": "AnalyzeRequest",
+      "type": "object"
+    },
+    "AnalyzeResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_id": {
+          "pattern": "^a_[0-9a-f]{16}$",
+          "title": "Analysis Id",
+          "type": "string"
+        },
+        "status": {
+          "const": "ready",
+          "title": "Status",
+          "type": "string"
+        },
+        "cached": {
+          "title": "Cached",
+          "type": "boolean"
+        },
+        "algorithm_version": {
+          "const": "rules-v1",
+          "title": "Algorithm Version",
+          "type": "string"
+        },
+        "runtime_ms": {
+          "minimum": 0,
+          "title": "Runtime Ms",
+          "type": "integer"
+        },
+        "summary_url": {
+          "title": "Summary Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "analysis_id",
+        "status",
+        "cached",
+        "algorithm_version",
+        "runtime_ms",
+        "summary_url"
+      ],
+      "title": "AnalyzeResponse",
+      "type": "object"
+    },
+    "AssistantRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "question": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        },
+        "focus_gids": {
+          "items": {
+            "pattern": "^-?(0|[1-9][0-9]*)$",
+            "type": "string"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "title": "Focus Gids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "question",
+        "focus_gids"
+      ],
+      "title": "AssistantRequest",
+      "type": "object"
+    },
+    "AssistantResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_id": {
+          "pattern": "^a_[0-9a-f]{16}$",
+          "title": "Analysis Id",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "live",
+            "fallback"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "fallback_reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "disabled",
+                "timeout",
+                "unavailable",
+                "invalid_output",
+                "refusal",
+                "incomplete"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fallback Reason"
+        },
+        "answer": {
+          "$ref": "#/$defs/AIAnswer"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceFact"
+          },
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "analysis_id",
+        "mode",
+        "fallback_reason",
+        "answer",
+        "evidence"
+      ],
+      "title": "AssistantResponse",
+      "type": "object"
+    },
+    "Charts": {
+      "additionalProperties": false,
+      "properties": {
+        "by_role": {
+          "items": {
+            "$ref": "#/$defs/RoleCount"
+          },
+          "title": "By Role",
+          "type": "array"
+        },
+        "by_depth": {
+          "items": {
+            "$ref": "#/$defs/DepthCount"
+          },
+          "title": "By Depth",
+          "type": "array"
+        },
+        "daily_flow": {
+          "items": {
+            "$ref": "#/$defs/DailyFlow"
+          },
+          "title": "Daily Flow",
+          "type": "array"
+        }
+      },
+      "required": [
+        "by_role",
+        "by_depth",
+        "daily_flow"
+      ],
+      "title": "Charts",
+      "type": "object"
+    },
+    "Cluster": {
+      "additionalProperties": false,
+      "properties": {
+        "cluster_id": {
+          "minimum": 0,
+          "title": "Cluster Id",
+          "type": "integer"
+        },
+        "n_nodes": {
+          "minimum": 0,
+          "title": "N Nodes",
+          "type": "integer"
+        },
+        "n_seed": {
+          "minimum": 0,
+          "title": "N Seed",
+          "type": "integer"
+        },
+        "sum_kzt_internal": {
+          "pattern": "^[0-9]+\\.[0-9]{2}$",
+          "title": "Sum Kzt Internal",
+          "type": "string"
+        },
+        "top_gids": {
+          "items": {
+            "pattern": "^-?(0|[1-9][0-9]*)$",
+            "type": "string"
+          },
+          "title": "Top Gids",
+          "type": "array"
+        },
+        "hypothesis": {
+          "title": "Hypothesis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cluster_id",
+        "n_nodes",
+        "n_seed",
+        "sum_kzt_internal",
+        "top_gids",
+        "hypothesis"
+      ],
+      "title": "Cluster",
+      "type": "object"
+    },
+    "DailyFlow": {
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "sum_kzt": {
+          "pattern": "^[0-9]+\\.[0-9]{2}$",
+          "title": "Sum Kzt",
+          "type": "string"
+        },
+        "n_tx": {
+          "minimum": 0,
+          "title": "N Tx",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "date",
+        "sum_kzt",
+        "n_tx"
+      ],
+      "title": "DailyFlow",
+      "type": "object"
+    },
+    "DashboardQuery": {
+      "additionalProperties": false,
+      "properties": {
+        "offset": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Offset",
+          "type": "integer"
+        },
+        "limit": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "title": "DashboardQuery",
+      "type": "object"
+    },
+    "DashboardResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_id": {
+          "pattern": "^a_[0-9a-f]{16}$",
+          "title": "Analysis Id",
+          "type": "string"
+        },
+        "algorithm_version": {
+          "const": "rules-v1",
+          "title": "Algorithm Version",
+          "type": "string"
+        },
+        "currency": {
+          "const": "KZT",
+          "title": "Currency",
+          "type": "string"
+        },
+        "period": {
+          "$ref": "#/$defs/Period"
+        },
+        "stats": {
+          "$ref": "#/$defs/Stats"
+        },
+        "charts": {
+          "$ref": "#/$defs/Charts"
+        },
+        "clusters": {
+          "items": {
+            "$ref": "#/$defs/Cluster"
+          },
+          "title": "Clusters",
+          "type": "array"
+        },
+        "ranking": {
+          "$ref": "#/$defs/RankingPage"
+        },
+        "warnings": {
+          "items": {
+            "$ref": "#/$defs/DataWarning"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "exports": {
+          "items": {
+            "$ref": "#/$defs/ExportLink"
+          },
+          "title": "Exports",
+          "type": "array"
+        }
+      },
+      "required": [
+        "analysis_id",
+        "algorithm_version",
+        "currency",
+        "period",
+        "stats",
+        "charts",
+        "clusters",
+        "ranking",
+        "warnings",
+        "exports"
+      ],
+      "title": "DashboardResponse",
+      "type": "object"
+    },
+    "DataWarning": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "affected_nodes": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Affected Nodes"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "affected_nodes"
+      ],
+      "title": "DataWarning",
+      "type": "object"
+    },
+    "DepthCount": {
+      "additionalProperties": false,
+      "properties": {
+        "depth": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Depth",
+          "type": "integer"
+        },
+        "count": {
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "depth",
+        "count"
+      ],
+      "title": "DepthCount",
+      "type": "object"
+    },
+    "ErrorDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "DATASET_NOT_FOUND",
+            "ANALYSIS_NOT_FOUND",
+            "GID_NOT_FOUND",
+            "INVALID_INPUT",
+            "ANALYSIS_BUSY",
+            "PIPELINE_FAILED",
+            "EXPORT_NOT_FOUND"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "request_id": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "retryable": {
+          "title": "Retryable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "request_id",
+        "retryable"
+      ],
+      "title": "ErrorDetail",
+      "type": "object"
+    },
+    "ErrorResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "error": {
+          "$ref": "#/$defs/ErrorDetail"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "title": "ErrorResponse",
+      "type": "object"
+    },
+    "EvidenceFact": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "gid": {
+          "pattern": "^-?(0|[1-9][0-9]*)$",
+          "title": "Gid",
+          "type": "string"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unit"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "gid",
+        "metric",
+        "value",
+        "unit",
+        "text"
+      ],
+      "title": "EvidenceFact",
+      "type": "object"
+    },
+    "ExportLink": {
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "enum": [
+            "nodes_roles.csv",
+            "clusters.csv",
+            "top_nodes.csv"
+          ],
+          "title": "Filename",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "filename",
+        "url"
+      ],
+      "title": "ExportLink",
+      "type": "object"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "title",
+        "evidence_ids"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "GraphEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "source": {
+          "pattern": "^-?(0|[1-9][0-9]*)$",
+          "title": "Source",
+          "type": "string"
+        },
+        "target": {
+          "pattern": "^-?(0|[1-9][0-9]*)$",
+          "title": "Target",
+          "type": "string"
+        },
+        "sum_kzt": {
+          "pattern": "^[0-9]+\\.[0-9]{2}$",
+          "title": "Sum Kzt",
+          "type": "string"
+        },
+        "n_tx": {
+          "minimum": 1,
+          "title": "N Tx",
+          "type": "integer"
+        },
+        "depth": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Depth",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "source",
+        "target",
+        "sum_kzt",
+        "n_tx",
+        "depth"
+      ],
+      "title": "GraphEdge",
+      "type": "object"
+    },
+    "GraphNode": {
+      "additionalProperties": false,
+      "properties": {
+        "gid": {
+          "pattern": "^-?(0|[1-9][0-9]*)$",
+          "title": "Gid",
+          "type": "string"
+        },
+        "depth": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Depth",
+          "type": "integer"
+        },
+        "is_seed": {
+          "title": "Is Seed",
+          "type": "boolean"
+        },
+        "role": {
+          "enum": [
+            "consolidator",
+            "transit",
+            "distributor",
+            "terminal",
+            "coordinator",
+            "peripheral"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "role_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Role Score",
+          "type": "number"
+        },
+        "cluster_id": {
+          "minimum": 0,
+          "title": "Cluster Id",
+          "type": "integer"
+        },
+        "priority_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Priority Score",
+          "type": "number"
+        },
+        "evidence": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Evidence",
+          "type": "string"
+        },
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "flags": {
+          "items": {
+            "enum": [
+              "depth4_censored",
+              "seed_inflow_incomplete",
+              "outflow_exceeds_observed_inflow",
+              "isolated",
+              "self_transfers_excluded"
+            ],
+            "type": "string"
+          },
+          "title": "Flags",
+          "type": "array"
+        },
+        "metrics": {
+          "$ref": "#/$defs/Metrics"
+        },
+        "priority_breakdown": {
+          "items": {
+            "$ref": "#/$defs/PriorityTerm"
+          },
+          "title": "Priority Breakdown",
+          "type": "array"
+        }
+      },
+      "required": [
+        "gid",
+        "depth",
+        "is_seed",
+        "role",
+        "role_score",
+        "cluster_id",
+        "priority_score",
+        "evidence",
+        "rule_id",
+        "flags",
+        "metrics",
+        "priority_breakdown"
+      ],
+      "title": "GraphNode",
+      "type": "object"
+    },
+    "GraphQuery": {
+      "additionalProperties": false,
+      "properties": {
+        "focus_gid": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Focus Gid"
+        },
+        "hops": {
+          "default": 1,
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Hops",
+          "type": "integer"
+        },
+        "cluster_id": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cluster Id"
+        },
+        "max_nodes": {
+          "default": 250,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max Nodes",
+          "type": "integer"
+        }
+      },
+      "title": "GraphQuery",
+      "type": "object"
+    },
+    "GraphResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_id": {
+          "pattern": "^a_[0-9a-f]{16}$",
+          "title": "Analysis Id",
+          "type": "string"
+        },
+        "focus_gid": {
+          "anyOf": [
+            {
+              "pattern": "^-?(0|[1-9][0-9]*)$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Focus Gid"
+        },
+        "nodes": {
+          "items": {
+            "$ref": "#/$defs/GraphNode"
+          },
+          "title": "Nodes",
+          "type": "array"
+        },
+        "edges": {
+          "items": {
+            "$ref": "#/$defs/GraphEdge"
+          },
+          "title": "Edges",
+          "type": "array"
+        },
+        "matched_nodes": {
+          "minimum": 0,
+          "title": "Matched Nodes",
+          "type": "integer"
+        },
+        "returned_nodes": {
+          "minimum": 0,
+          "title": "Returned Nodes",
+          "type": "integer"
+        },
+        "truncated": {
+          "title": "Truncated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "analysis_id",
+        "focus_gid",
+        "nodes",
+        "edges",
+        "matched_nodes",
+        "returned_nodes",
+        "truncated"
+      ],
+      "title": "GraphResponse",
+      "type": "object"
+    },
+    "Metrics": {
+      "additionalProperties": false,
+      "properties": {
+        "in_degree": {
+          "minimum": 0,
+          "title": "In Degree",
+          "type": "integer"
+        },
+        "out_degree": {
+          "minimum": 0,
+          "title": "Out Degree",
+          "type": "integer"
+        },
+        "observed_in_kzt": {
+          "pattern": "^[0-9]+\\.[0-9]{2}$",
+          "title": "Observed In Kzt",
+          "type": "string"
+        },
+        "observed_out_kzt": {
+          "pattern": "^[0-9]+\\.[0-9]{2}$",
+          "title": "Observed Out Kzt",
+          "type": "string"
+        },
+        "observed_out_in_ratio": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Observed Out In Ratio"
+        },
+        "ratio_usable": {
+          "title": "Ratio Usable",
+          "type": "boolean"
+        },
+        "reachable_seed_count": {
+          "minimum": 0,
+          "title": "Reachable Seed Count",
+          "type": "integer"
+        },
+        "betweenness": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Betweenness",
+          "type": "number"
+        }
+      },
+      "required": [
+        "in_degree",
+        "out_degree",
+        "observed_in_kzt",
+        "observed_out_kzt",
+        "observed_out_in_ratio",
+        "ratio_usable",
+        "reachable_seed_count",
+        "betweenness"
+      ],
+      "title": "Metrics",
+      "type": "object"
+    },
+    "Period": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "format": "date",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "format": "date",
+          "title": "End",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "Period",
+      "type": "object"
+    },
+    "PriorityTerm": {
+      "additionalProperties": false,
+      "properties": {
+        "feature": {
+          "enum": [
+            "inflow",
+            "in_degree",
+            "betweenness",
+            "seed_reach",
+            "role"
+          ],
+          "title": "Feature",
+          "type": "string"
+        },
+        "normalized_value": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Normalized Value",
+          "type": "number"
+        },
+        "weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "contribution": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Contribution",
+          "type": "number"
+        }
+      },
+      "required": [
+        "feature",
+        "normalized_value",
+        "weight",
+        "contribution"
+      ],
+      "title": "PriorityTerm",
+      "type": "object"
+    },
+    "RankedNode": {
+      "additionalProperties": false,
+      "properties": {
+        "rank": {
+          "minimum": 1,
+          "title": "Rank",
+          "type": "integer"
+        },
+        "gid": {
+          "pattern": "^-?(0|[1-9][0-9]*)$",
+          "title": "Gid",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "consolidator",
+            "transit",
+            "distributor",
+            "terminal",
+            "coordinator",
+            "peripheral"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "priority_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Priority Score",
+          "type": "number"
+        },
+        "why": {
+          "title": "Why",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rank",
+        "gid",
+        "role",
+        "priority_score",
+        "why"
+      ],
+      "title": "RankedNode",
+      "type": "object"
+    },
+    "RankingPage": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/RankedNode"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "total": {
+          "minimum": 0,
+          "title": "Total",
+          "type": "integer"
+        },
+        "offset": {
+          "minimum": 0,
+          "title": "Offset",
+          "type": "integer"
+        },
+        "limit": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "items",
+        "total",
+        "offset",
+        "limit"
+      ],
+      "title": "RankingPage",
+      "type": "object"
+    },
+    "RoleCount": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "enum": [
+            "consolidator",
+            "transit",
+            "distributor",
+            "terminal",
+            "coordinator",
+            "peripheral"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "count": {
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "role",
+        "count"
+      ],
+      "title": "RoleCount",
+      "type": "object"
+    },
+    "Stats": {
+      "additionalProperties": false,
+      "properties": {
+        "n_nodes": {
+          "minimum": 0,
+          "title": "N Nodes",
+          "type": "integer"
+        },
+        "n_edges": {
+          "minimum": 0,
+          "title": "N Edges",
+          "type": "integer"
+        },
+        "n_transactions": {
+          "minimum": 0,
+          "title": "N Transactions",
+          "type": "integer"
+        },
+        "n_seed": {
+          "minimum": 0,
+          "title": "N Seed",
+          "type": "integer"
+        },
+        "n_clusters": {
+          "minimum": 0,
+          "title": "N Clusters",
+          "type": "integer"
+        },
+        "n_weak_components": {
+          "minimum": 0,
+          "title": "N Weak Components",
+          "type": "integer"
+        },
+        "n_isolated_nodes": {
+          "minimum": 0,
+          "title": "N Isolated Nodes",
+          "type": "integer"
+        },
+        "n_depth4_censored": {
+          "minimum": 0,
+          "title": "N Depth4 Censored",
+          "type": "integer"
+        },
+        "graph_turnover_kzt": {
+          "pattern": "^[0-9]+\\.[0-9]{2}$",
+          "title": "Graph Turnover Kzt",
+          "type": "string"
+        },
+        "self_transfer_turnover_kzt": {
+          "pattern": "^[0-9]+\\.[0-9]{2}$",
+          "title": "Self Transfer Turnover Kzt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "n_nodes",
+        "n_edges",
+        "n_transactions",
+        "n_seed",
+        "n_clusters",
+        "n_weak_components",
+        "n_isolated_nodes",
+        "n_depth4_censored",
+        "graph_turnover_kzt",
+        "self_transfer_turnover_kzt"
+      ],
+      "title": "Stats",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "analyze_request": {
+      "$ref": "#/$defs/AnalyzeRequest"
+    },
+    "analyze_response": {
+      "$ref": "#/$defs/AnalyzeResponse"
+    },
+    "dashboard_query": {
+      "$ref": "#/$defs/DashboardQuery"
+    },
+    "dashboard_response": {
+      "$ref": "#/$defs/DashboardResponse"
+    },
+    "graph_query": {
+      "$ref": "#/$defs/GraphQuery"
+    },
+    "graph_response": {
+      "$ref": "#/$defs/GraphResponse"
+    },
+    "assistant_request": {
+      "$ref": "#/$defs/AssistantRequest"
+    },
+    "assistant_response": {
+      "$ref": "#/$defs/AssistantResponse"
+    },
+    "error_response": {
+      "$ref": "#/$defs/ErrorResponse"
+    }
+  },
+  "required": [
+    "analyze_request",
+    "analyze_response",
+    "dashboard_query",
+    "dashboard_response",
+    "graph_query",
+    "graph_response",
+    "assistant_request",
+    "assistant_response",
+    "error_response"
+  ],
+  "title": "ContractBundle",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

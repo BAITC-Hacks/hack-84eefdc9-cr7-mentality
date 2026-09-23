@@ -1,0 +1,616 @@
+{
+  "analyze_request": {
+    "dataset_id": "hackalem-july-2026"
+  },
+  "analyze_response": {
+    "analysis_id": "a_0123456789abcdef",
+    "status": "ready",
+    "cached": false,
+    "algorithm_version": "rules-v1",
+    "runtime_ms": 1250,
+    "summary_url": "/api/v1/analyses/a_0123456789abcdef"
+  },
+  "dashboard_query": {
+    "offset": 0,
+    "limit": 20
+  },
+  "dashboard_response": {
+    "analysis_id": "a_0123456789abcdef",
+    "algorithm_version": "rules-v1",
+    "currency": "KZT",
+    "period": {
+      "start": "2026-07-01",
+      "end": "2026-07-31"
+    },
+    "stats": {
+      "n_nodes": 20,
+      "n_edges": 19,
+      "n_transactions": 31,
+      "n_seed": 3,
+      "n_clusters": 1,
+      "n_weak_components": 1,
+      "n_isolated_nodes": 0,
+      "n_depth4_censored": 0,
+      "graph_turnover_kzt": "2000000.00",
+      "self_transfer_turnover_kzt": "0.00"
+    },
+    "charts": {
+      "by_role": [
+        {
+          "role": "consolidator",
+          "count": 1
+        },
+        {
+          "role": "transit",
+          "count": 0
+        },
+        {
+          "role": "distributor",
+          "count": 0
+        },
+        {
+          "role": "terminal",
+          "count": 0
+        },
+        {
+          "role": "coordinator",
+          "count": 0
+        },
+        {
+          "role": "peripheral",
+          "count": 19
+        }
+      ],
+      "by_depth": [
+        {
+          "depth": 0,
+          "count": 3
+        },
+        {
+          "depth": 1,
+          "count": 8
+        },
+        {
+          "depth": 2,
+          "count": 8
+        },
+        {
+          "depth": 3,
+          "count": 1
+        },
+        {
+          "depth": 4,
+          "count": 0
+        }
+      ],
+      "daily_flow": [
+        {
+          "date": "2026-07-01",
+          "sum_kzt": "2000000.00",
+          "n_tx": 31
+        },
+        {
+          "date": "2026-07-02",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-03",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-04",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-05",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-06",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-07",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-08",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-09",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-10",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-11",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-12",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-13",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-14",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-15",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-16",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-17",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-18",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-19",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-20",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-21",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-22",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-23",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-24",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-25",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-26",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-27",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-28",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-29",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-30",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        },
+        {
+          "date": "2026-07-31",
+          "sum_kzt": "0.00",
+          "n_tx": 0
+        }
+      ]
+    },
+    "clusters": [
+      {
+        "cluster_id": 0,
+        "n_nodes": 20,
+        "n_seed": 3,
+        "sum_kzt_internal": "2000000.00",
+        "top_gids": [
+          "1001",
+          "1002",
+          "1003"
+        ],
+        "hypothesis": "Пример формы гипотезы о концентрации переводов; синтетические значения."
+      }
+    ],
+    "ranking": {
+      "items": [
+        {
+          "rank": 1,
+          "gid": "1001",
+          "role": "consolidator",
+          "priority_score": 0.883,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 2,
+          "gid": "1002",
+          "role": "peripheral",
+          "priority_score": 0.39,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 3,
+          "gid": "1003",
+          "role": "peripheral",
+          "priority_score": 0.38,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 4,
+          "gid": "1004",
+          "role": "peripheral",
+          "priority_score": 0.37,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 5,
+          "gid": "1005",
+          "role": "peripheral",
+          "priority_score": 0.36,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 6,
+          "gid": "1006",
+          "role": "peripheral",
+          "priority_score": 0.35,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 7,
+          "gid": "1007",
+          "role": "peripheral",
+          "priority_score": 0.34,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 8,
+          "gid": "1008",
+          "role": "peripheral",
+          "priority_score": 0.33,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 9,
+          "gid": "1009",
+          "role": "peripheral",
+          "priority_score": 0.32,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 10,
+          "gid": "1010",
+          "role": "peripheral",
+          "priority_score": 0.31,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 11,
+          "gid": "1011",
+          "role": "peripheral",
+          "priority_score": 0.3,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 12,
+          "gid": "1012",
+          "role": "peripheral",
+          "priority_score": 0.29,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 13,
+          "gid": "1013",
+          "role": "peripheral",
+          "priority_score": 0.28,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 14,
+          "gid": "1014",
+          "role": "peripheral",
+          "priority_score": 0.27,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 15,
+          "gid": "1015",
+          "role": "peripheral",
+          "priority_score": 0.26,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 16,
+          "gid": "1016",
+          "role": "peripheral",
+          "priority_score": 0.25,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 17,
+          "gid": "1017",
+          "role": "peripheral",
+          "priority_score": 0.24,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 18,
+          "gid": "1018",
+          "role": "peripheral",
+          "priority_score": 0.23,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 19,
+          "gid": "1019",
+          "role": "peripheral",
+          "priority_score": 0.22,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        },
+        {
+          "rank": 20,
+          "gid": "1020",
+          "role": "peripheral",
+          "priority_score": 0.21,
+          "why": "Иллюстративная строка контракта; не результат анализа датасета."
+        }
+      ],
+      "total": 20,
+      "offset": 0,
+      "limit": 20
+    },
+    "warnings": [
+      {
+        "code": "OUTGOING_ONLY",
+        "message": "Наблюдаются только потоки внутри выгрузки; полный баланс неизвестен.",
+        "affected_nodes": 20
+      }
+    ],
+    "exports": [
+      {
+        "filename": "nodes_roles.csv",
+        "url": "/api/v1/analyses/a_0123456789abcdef/exports/nodes_roles.csv"
+      },
+      {
+        "filename": "clusters.csv",
+        "url": "/api/v1/analyses/a_0123456789abcdef/exports/clusters.csv"
+      },
+      {
+        "filename": "top_nodes.csv",
+        "url": "/api/v1/analyses/a_0123456789abcdef/exports/top_nodes.csv"
+      }
+    ]
+  },
+  "graph_query": {
+    "focus_gid": "1001",
+    "hops": 1,
+    "cluster_id": null,
+    "max_nodes": 2
+  },
+  "graph_response": {
+    "analysis_id": "a_0123456789abcdef",
+    "focus_gid": "1001",
+    "nodes": [
+      {
+        "gid": "1001",
+        "depth": 2,
+        "is_seed": false,
+        "role": "consolidator",
+        "role_score": 0.9925,
+        "cluster_id": 0,
+        "priority_score": 0.883,
+        "evidence": "11 плательщиков; наблюдаемый исходящий поток составляет 3% входящего. Признаки консолидации.",
+        "rule_id": "R3",
+        "flags": [],
+        "metrics": {
+          "in_degree": 11,
+          "out_degree": 1,
+          "observed_in_kzt": "1000000.00",
+          "observed_out_kzt": "30000.00",
+          "observed_out_in_ratio": 0.03,
+          "ratio_usable": true,
+          "reachable_seed_count": 3,
+          "betweenness": 0.002
+        },
+        "priority_breakdown": [
+          {
+            "feature": "inflow",
+            "normalized_value": 0.92,
+            "weight": 0.3,
+            "contribution": 0.276
+          },
+          {
+            "feature": "in_degree",
+            "normalized_value": 0.86,
+            "weight": 0.2,
+            "contribution": 0.172
+          },
+          {
+            "feature": "betweenness",
+            "normalized_value": 0.9,
+            "weight": 0.2,
+            "contribution": 0.18
+          },
+          {
+            "feature": "seed_reach",
+            "normalized_value": 0.8,
+            "weight": 0.2,
+            "contribution": 0.16
+          },
+          {
+            "feature": "role",
+            "normalized_value": 0.95,
+            "weight": 0.1,
+            "contribution": 0.095
+          }
+        ]
+      },
+      {
+        "gid": "1002",
+        "depth": 3,
+        "is_seed": false,
+        "role": "peripheral",
+        "role_score": 0.3,
+        "cluster_id": 0,
+        "priority_score": 0.39,
+        "evidence": "Признаки выбранных правил не достигли порогов; требуется ручная проверка.",
+        "rule_id": "R6",
+        "flags": [],
+        "metrics": {
+          "in_degree": 1,
+          "out_degree": 1,
+          "observed_in_kzt": "30000.00",
+          "observed_out_kzt": "15000.00",
+          "observed_out_in_ratio": 0.5,
+          "ratio_usable": true,
+          "reachable_seed_count": 3,
+          "betweenness": 0.001
+        },
+        "priority_breakdown": [
+          {
+            "feature": "inflow",
+            "normalized_value": 0.4,
+            "weight": 0.3,
+            "contribution": 0.12
+          },
+          {
+            "feature": "in_degree",
+            "normalized_value": 0.3,
+            "weight": 0.2,
+            "contribution": 0.06
+          },
+          {
+            "feature": "betweenness",
+            "normalized_value": 0.3,
+            "weight": 0.2,
+            "contribution": 0.06
+          },
+          {
+            "feature": "seed_reach",
+            "normalized_value": 0.7,
+            "weight": 0.2,
+            "contribution": 0.14
+          },
+          {
+            "feature": "role",
+            "normalized_value": 0.1,
+            "weight": 0.1,
+            "contribution": 0.01
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "id": "1001:1002",
+        "source": "1001",
+        "target": "1002",
+        "sum_kzt": "30000.00",
+        "n_tx": 1,
+        "depth": 3
+      }
+    ],
+    "matched_nodes": 13,
+    "returned_nodes": 2,
+    "truncated": true
+  },
+  "assistant_request": {
+    "question": "Почему этот узел стоит проверить?",
+    "focus_gids": [
+      "1001"
+    ]
+  },
+  "assistant_response": {
+    "analysis_id": "a_0123456789abcdef",
+    "mode": "live",
+    "fallback_reason": null,
+    "answer": {
+      "status": "ok",
+      "summary": "В наблюдаемом графе есть признаки консолидации средств. Это гипотеза для ручной проверки.",
+      "findings": [
+        {
+          "title": "Много источников и небольшой наблюдаемый исходящий поток",
+          "evidence_ids": [
+            "node:1001:in_degree",
+            "node:1001:observed_out_in_ratio"
+          ]
+        }
+      ],
+      "missing_data": [
+        "Полный баланс и переводы за пределами выборки неизвестны."
+      ],
+      "next_steps": [
+        "Проверьте полный набор исходящих переводов выбранного клиента."
+      ]
+    },
+    "evidence": [
+      {
+        "id": "node:1001:in_degree",
+        "gid": "1001",
+        "metric": "in_degree",
+        "value": "11",
+        "unit": "counterparties",
+        "text": "Наблюдаются входящие переводы от 11 различных плательщиков."
+      },
+      {
+        "id": "node:1001:observed_out_in_ratio",
+        "gid": "1001",
+        "metric": "observed_out_in_ratio",
+        "value": "0.03",
+        "unit": "ratio",
+        "text": "Наблюдаемый исходящий поток составляет 3% входящего."
+      }
+    ]
+  },
+  "error_response": {
+    "error": {
+      "code": "GID_NOT_FOUND",
+      "message": "Узел отсутствует в этом анализе.",
+      "request_id": "req_example_01",
+      "retryable": false
+    }
+  }
+}
