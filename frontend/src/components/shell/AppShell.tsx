@@ -1,83 +1,34 @@
+"use client";
+
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  Download,
-  GitFork,
-  HelpCircle,
-  Layers3,
-  Network,
-  PanelLeftClose,
-  ShieldCheck,
-} from "lucide-react";
-export function AppShell({
-  children,
-  analysisId,
-  demo = false,
-}: {
+import { usePathname } from "next/navigation";
+import { Activity, ChartNoAxesColumn, FileText, GitFork, Network } from "lucide-react";
+
+export function AppShell({ children, analysisId, demo = false }: {
   children: React.ReactNode;
   analysisId?: string | null;
   demo?: boolean;
 }) {
-  const query = analysisId
-    ? `?analysis=${encodeURIComponent(analysisId)}${demo ? "&demo=1" : ""}`
-    : "";
+  const pathname = usePathname();
+  const query = analysisId ? `?analysis=${encodeURIComponent(analysisId)}${demo ? "&demo=1" : ""}` : "";
+  const links = [
+    { href: `/workspace${query}`, path: "/workspace", label: "Исследование", icon: Network },
+    { href: "/methodology", path: "/methodology", label: "Методология", icon: ChartNoAxesColumn },
+    { href: `/exports${query}`, path: "/exports", label: "Экспорт", icon: FileText },
+  ];
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <Link href="/" className="brand">
-          <span className="brand-icon">
-            <GitFork size={23} />
-          </span>
-          <span>
-            Граф денег<span className="brand-sub">FINANCIAL INTELLIGENCE</span>
-          </span>
-        </Link>
-        <div className="sidebar-label">
-          РАБОЧЕЕ ПРОСТРАНСТВО <PanelLeftClose size={14} />
-        </div>
-        <nav aria-label="Основная навигация">
-          <Link className="nav-link active" href={`/workspace${query}`}>
-            <Network size={18} />
-            Обзор сети
-            <span className="nav-dot" />
-          </Link>
-          <Link className="nav-link" href="/methodology">
-            <Layers3 size={18} />
-            Методология
-            <ArrowUpRight size={13} />
-          </Link>
-          <Link className="nav-link" href={`/exports${query}`}>
-            <Download size={18} />
-            Экспорт данных
-            <ArrowUpRight size={13} />
-          </Link>
-        </nav>
-        <div className="sidebar-bottom">
-          <div className="scope-note">
-            <ShieldCheck size={20} />
-            <strong>От данных к гипотезе</strong>
-            <p>Роли и приоритет помогают выбрать узлы для ручной проверки.</p>
-          </div>
-          <div className="team">
-            <span className="team-avatar">C7</span>
-            <div>
-              CR7 Mentality<small>HackAlem · 2026</small>
-            </div>
-            <HelpCircle size={17} />
-          </div>
-        </div>
+    <div className="investigation-shell">
+      <a className="skip-link" href="#research-main">К содержимому</a>
+      <aside className="research-rail" aria-label="Разделы проекта">
+        <Link className="rail-brand" href="/" title="Граф денег" aria-label="Граф денег, главная"><GitFork size={31} strokeWidth={1.65} /></Link>
+        <nav>{links.map(({ href, path, label, icon: Icon }) => <Link key={path} href={href} title={label} aria-label={label} aria-current={pathname === path ? "page" : undefined}><Icon size={24} strokeWidth={1.7} /></Link>)}</nav>
+        <span className="rail-signature" title="CR7 Mentality">C7</span>
       </aside>
-      <div className="main-shell">
-        <header className="topbar">
-          <div className="breadcrumbs">
-            Рабочее пространство<span>/</span>
-            <strong>Обзор сети</strong>
-          </div>
-          <div className="topbar-right">
-            <span className={`connection-dot ${demo ? "demo" : ""}`} />
-            {demo ? "Демонстрация интерфейса" : "Анализ денежных потоков"}
-            <span className="avatar">C7</span>
-          </div>
+      <div className="research-body">
+        <header className="research-topbar">
+          <Link href={`/workspace${query}`} className="research-wordmark">Граф денег<span>FINANCIAL INTELLIGENCE</span></Link>
+          <nav aria-label="Основная навигация">{links.map(({ href, path, label }) => <Link key={path} href={href} aria-current={pathname === path ? "page" : undefined}>{label}</Link>)}</nav>
+          <span className="research-mode"><Activity size={14} />{demo ? "Демонстрационный вид" : "Рабочая область"}</span>
         </header>
         {children}
       </div>

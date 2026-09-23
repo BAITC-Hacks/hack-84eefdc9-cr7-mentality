@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./investigation.css";
 export const metadata: Metadata = {
   title: "Граф денег · Анализ связей",
   description:

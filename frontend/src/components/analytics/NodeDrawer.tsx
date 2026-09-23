@@ -1,14 +1,16 @@
 import {
   ArrowDownLeft,
   ArrowUpRight,
+  ChevronDown,
   CircleDot,
-  ExternalLink,
   Info,
-  ShieldAlert,
 } from "lucide-react";
+import type { GraphNode } from "@/contracts/api";
 import type { NodeDrawerProps } from "@/features/workspace/types";
 import { roles } from "@/lib/role-colors";
-import { integer, money, scoreLabel } from "@/lib/format";
+import { compactMoney, integer, money, scoreLabel } from "@/lib/format";
+import styles from "./NodeDrawer.module.css";
+
 const featureLabels = {
   inflow: "Входящий поток",
   in_degree: "Число плательщиков",
@@ -16,185 +18,209 @@ const featureLabels = {
   seed_reach: "Достижимость от seed",
   role: "Роль",
 };
+
+const coverageNotes: Record<
+  GraphNode["flags"][number],
+  { label: string; detail: string }
+> = {
+  depth4_censored: {
+    label: "Исходящие неизвестны",
+    detail:
+      "На 4-м колене исходящие неизвестны. Отсутствие переводов не подтверждает удержание денег или конечного получателя.",
+  },
+  seed_inflow_incomplete: {
+    label: "Входящие seed неполны",
+    detail:
+      "У исходного seed входящие неполны. Отношение потоков не участвует в определении роли.",
+  },
+  outflow_exceeds_observed_inflow: {
+    label: "Исходящий поток выше входящего",
+    detail:
+      "Исходящий поток больше наблюдаемого входящего. Это указывает на неполноту покрытия.",
+  },
+  isolated: {
+    label: "Нет наблюдаемых связей",
+    detail:
+      "Изолированный узел сохранён в анализе. Связей в выгрузке нет.",
+  },
+  self_transfers_excluded: {
+    label: "Самопереводы исключены из метрик",
+    detail:
+      "Переводы самому себе сохранены в графе и исключены из структурных метрик и ролей.",
+  },
+};
+
 export function NodeDrawer({
   node,
   children,
 }: NodeDrawerProps & { children?: React.ReactNode }) {
   if (!node)
     return (
-      <aside className="panel node-panel">
-        <div className="empty-node">
-          <CircleDot size={30} />
-          <h2>Выберите узел</h2>
-          <p>
-            Нажмите на узел в графе или таблице, чтобы увидеть признаки и
-            ограничения.
-          </p>
+      <aside className={styles.drawer} aria-label="Карточка узла">
+        <div className={styles.empty}>
+          <CircleDot size={28} aria-hidden="true" />
+          <h2>Узел не выбран</h2>
         </div>
       </aside>
     );
+
   const role = roles[node.role];
+  const { metrics } = node;
+  const coverageSummary = node.flags
+    .filter((flag) => flag !== "self_transfers_excluded")
+    .map((flag) => coverageNotes[flag].label)
+    .join(" · ");
+
   return (
-    <aside
-      className="panel node-panel"
-      aria-label={`Карточка узла ${node.gid}`}
-    >
-      <div className="panel-heading">
-        <span className="eyebrow">ПРОФИЛЬ УЗЛА</span>
-        <ExternalLink size={16} />
-      </div>
-      <div className="node-identity">
-        <div className="node-id-row">
+    <aside className={styles.drawer} aria-label={`Карточка узла ${node.gid}`}>
+      <header className={styles.identity}>
+        <div className={styles.selectedLabel}>
+          <CircleDot size={14} aria-hidden="true" />
+          <span>Выбранный узел</span>
+        </div>
+        <h2
+          className={`${styles.gid} ${node.gid.length > 12 ? styles.longGid : ""}`}
+          title={node.gid}
+        >
+          {node.gid}
+        </h2>
+        <div className={styles.role}>
           <span
-            className="node-symbol"
-            style={{ background: role.soft, color: role.color }}
-          >
-            <CircleDot size={25} />
-          </span>
-          <div>
-            <span className="muted">Идентификатор</span>
-            <h2 className="mono">{node.gid}</h2>
-          </div>
+            className={styles.swatch}
+            style={{ backgroundColor: role.color }}
+            aria-hidden="true"
+          />
+          {role.label}
         </div>
-        <div className="node-tags">
-          <span
-            className="role-badge"
-            style={{ background: role.soft, color: role.color }}
-          >
-            <i style={{ background: role.color }} />
-            {role.label}
-          </span>
-          {node.is_seed && <span className="badge">Seed</span>}
-          <span className="badge">Глубина {node.depth}</span>
-          <span className="badge">Кластер {node.cluster_id}</span>
-        </div>
-      </div>
-      <div className="node-section">
-        <div className="section-title">
-          Приоритет проверки{" "}
-          <strong>
-            {scoreLabel(node.priority_score)}
-            <span> / 1</span>
-          </strong>
-        </div>
-        <div className="score-track">
-          <span style={{ width: `${node.priority_score * 100}%` }} />
-        </div>
-        <p className="microcopy">
-          Выраженность признаков роли: {scoreLabel(node.role_score)}.
-          Эвристическая оценка, не вероятность.
+        <p className={styles.context}>
+          {node.is_seed && <span>Seed</span>}
+          <span>Глубина {node.depth}</span>
+          <span>Кластер {node.cluster_id}</span>
         </p>
-      </div>
-      <div className="node-section">
-        <h3>Наблюдаемые потоки</h3>
-        <div className="money-row">
-          <span>
-            <ArrowDownLeft size={15} />
-            Входящий
-          </span>
-          <strong>{money(node.metrics.observed_in_kzt)}</strong>
-        </div>
-        <div className="money-row">
-          <span>
-            <ArrowUpRight size={15} />
-            Исходящий
-          </span>
-          <strong>{money(node.metrics.observed_out_kzt)}</strong>
-        </div>
-        <div className="node-metrics">
+        <dl className={styles.flows}>
           <div>
-            <strong>{integer(node.metrics.in_degree)}</strong>
-            <span>Плательщиков</span>
+            <dt>
+              <ArrowDownLeft size={14} aria-hidden="true" />Входящий
+            </dt>
+            <dd title={money(metrics.observed_in_kzt)}>
+              {compactMoney(metrics.observed_in_kzt)}
+            </dd>
           </div>
           <div>
-            <strong>{integer(node.metrics.out_degree)}</strong>
-            <span>Получателей</span>
-          </div>
-          <div>
-            <strong>{integer(node.metrics.reachable_seed_count)}</strong>
-            <span>Других seed</span>
-          </div>
-        </div>
-        <dl className="minor-metrics">
-          <div>
-            <dt>Betweenness</dt>
-            <dd>{node.metrics.betweenness.toFixed(4)}</dd>
-          </div>
-          <div>
-            <dt>Отношение исходящего к входящему</dt>
-            <dd>
-              {node.metrics.observed_out_in_ratio === null
-                ? "Не определено"
-                : node.metrics.observed_out_in_ratio.toFixed(3)}
+            <dt>
+              <ArrowUpRight size={14} aria-hidden="true" />Исходящий
+            </dt>
+            <dd title={money(metrics.observed_out_kzt)}>
+              {compactMoney(metrics.observed_out_kzt)}
             </dd>
           </div>
         </dl>
-      </div>
-      <div className="node-section">
-        <h3>
-          <Info size={15} />
-          Основание роли
-        </h3>
-        <p className="evidence-text">{node.evidence}</p>
-        <p className="microcopy">
-          Правило: {node.rule_id}. Метрики рассчитаны по полному анализу.
+        <p className={styles.participants}>
+          <span>Отправителей <strong>{integer(metrics.in_degree)}</strong></span>
+          <span>Получателей <strong>{integer(metrics.out_degree)}</strong></span>
         </p>
-        {node.flags.includes("self_transfers_excluded") && (
-          <p className="microcopy">
-            Переводы самому себе сохранены в графе и исключены из структурных
-            метрик и ролей.
+        {coverageSummary && (
+          <p className={styles.coverageSummary}>
+            <Info size={14} aria-hidden="true" />
+            <span>{coverageSummary}</span>
           </p>
         )}
-        {node.priority_breakdown.length > 0 && (
-          <details className="breakdown">
-            <summary>Что формирует приоритет</summary>
-            {node.priority_breakdown.map((item, i) => (
-              <div key={`${item.feature}-${i}`}>
-                <span>
-                  {featureLabels[item.feature]}
-                  <small>
-                    Нормированное значение: {scoreLabel(item.normalized_value)}{" "}
-                    · Вес: {item.weight}
-                  </small>
-                </span>
-                <strong>+{scoreLabel(item.contribution)}</strong>
-              </div>
-            ))}
-          </details>
-        )}
-      </div>
-      {(node.flags.includes("depth4_censored") ||
-        node.flags.includes("seed_inflow_incomplete") ||
-        node.flags.includes("outflow_exceeds_observed_inflow") ||
-        node.flags.includes("isolated")) && (
-        <div className="node-warnings">
-          <h3>
-            <ShieldAlert size={15} />
-            Ограничения наблюдения
-          </h3>
-          {node.flags.includes("depth4_censored") && (
-            <p>
-              На 4-м колене исходящие неизвестны. Отсутствие переводов не
-              подтверждает удержание денег или конечного получателя.
-            </p>
+      </header>
+
+      <section className={styles.evidence} aria-label="Основания проверки">
+        <h3 className={styles.heading}>Основания проверки</h3>
+        <p className={styles.ruleCaption}>Правило: {node.rule_id || "Не указано"}</p>
+        <details className={styles.details} key={`evidence-${node.gid}`}>
+          <summary>
+            <span>Признаки роли</span>
+            <ChevronDown size={16} className={styles.chevron} aria-hidden="true" />
+          </summary>
+          <p className={styles.evidenceText}>
+            {node.evidence || "Основание не указано в анализе."}
+          </p>
+        </details>
+
+        <details className={styles.details} key={`priority-${node.gid}`}>
+          <summary>
+            <span>Приоритет и признаки</span>
+            <ChevronDown size={16} className={styles.chevron} aria-hidden="true" />
+          </summary>
+          <dl className={styles.scores}>
+            <div>
+              <dt>Приоритет проверки</dt>
+              <dd title={String(node.priority_score)}>
+                {scoreLabel(node.priority_score)}<span> / 1</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Признаки роли</dt>
+              <dd title={String(node.role_score)}>
+                {scoreLabel(node.role_score)}<span> / 1</span>
+              </dd>
+            </div>
+          </dl>
+          <p className={styles.note}>Обе оценки эвристические, не вероятности.</p>
+          {node.priority_breakdown.length > 0 && (
+            <>
+              <h4 className={styles.detailHeading}>Что формирует приоритет</h4>
+              <dl className={styles.breakdown}>
+              {node.priority_breakdown.map((item, index) => (
+                <div key={`${item.feature}-${index}`}>
+                  <dt>
+                    {featureLabels[item.feature]}
+                    <span>
+                      Нормированное значение: {item.normalized_value} · Вес: {item.weight}
+                    </span>
+                  </dt>
+                  <dd title={`Вклад: ${item.contribution}`}>+{item.contribution}</dd>
+                </div>
+              ))}
+              </dl>
+            </>
           )}
-          {node.flags.includes("seed_inflow_incomplete") && (
-            <p>
-              У исходного seed входящие неполны. Отношение потоков не участвует
-              в определении роли.
-            </p>
+        </details>
+
+        <details className={styles.details} key={`metrics-${node.gid}`}>
+          <summary>
+            <span>Все метрики</span>
+            <ChevronDown size={16} className={styles.chevron} aria-hidden="true" />
+          </summary>
+          <dl className={styles.metrics}>
+            <div><dt>Наблюдаемый входящий</dt><dd>{money(metrics.observed_in_kzt)}</dd></div>
+            <div><dt>Наблюдаемый исходящий</dt><dd>{money(metrics.observed_out_kzt)}</dd></div>
+            <div><dt>Плательщиков</dt><dd>{integer(metrics.in_degree)}</dd></div>
+            <div><dt>Получателей</dt><dd>{integer(metrics.out_degree)}</dd></div>
+            <div><dt>Других seed</dt><dd>{integer(metrics.reachable_seed_count)}</dd></div>
+            <div><dt>Посредничество (betweenness)</dt><dd>{metrics.betweenness}</dd></div>
+            <div>
+              <dt>Отношение исходящего к входящему</dt>
+              <dd>{metrics.observed_out_in_ratio ?? "Не определено"}</dd>
+            </div>
+            <div>
+              <dt>Использование отношения потоков</dt>
+              <dd>
+                {metrics.ratio_usable
+                  ? "Допустимо для определения роли"
+                  : "Не используется в определении роли"}
+              </dd>
+            </div>
+          </dl>
+          <p className={styles.note}>Метрики рассчитаны по полному анализу.</p>
+          {node.flags.length > 0 && (
+            <>
+              <h4 className={styles.detailHeading}>Ограничения наблюдения</h4>
+              <dl className={styles.coverage}>
+                {node.flags.map((flag) => (
+                  <div key={flag}>
+                    <dt>{coverageNotes[flag].label}</dt>
+                    <dd>{coverageNotes[flag].detail}</dd>
+                  </div>
+                ))}
+              </dl>
+            </>
           )}
-          {node.flags.includes("outflow_exceeds_observed_inflow") && (
-            <p>
-              Исходящий поток больше наблюдаемого входящего. Это указывает на
-              неполноту покрытия.
-            </p>
-          )}
-          {node.flags.includes("isolated") && (
-            <p>Изолированный узел сохранён в анализе. Связей в выгрузке нет.</p>
-          )}
-        </div>
-      )}
+        </details>
+      </section>
       {children}
     </aside>
   );

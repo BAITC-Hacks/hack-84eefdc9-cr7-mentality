@@ -1,0 +1,317 @@
+.drawer {
+  min-width: 0;
+  width: 100%;
+  container-type: inline-size;
+  align-self: start;
+  background: transparent;
+  color: #171a19;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.identity {
+  padding: 22px;
+  border-radius: 6px;
+  background: #182d2a;
+  color: #fff;
+}
+
+.selectedLabel,
+.role,
+.flows dt,
+.coverageSummary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.selectedLabel {
+  color: #d4dcd8;
+  font-size: 11px;
+}
+
+.gid {
+  margin: 10px 0 8px;
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.longGid {
+  font-size: 20px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.role {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.swatch {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 2px;
+}
+
+.context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 6px 0 0;
+  color: #d4dcd8;
+  font-size: 11px;
+}
+
+.flows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 16px 0 0;
+  padding-top: 13px;
+  border-top: 1px solid #49605a;
+}
+
+.flows dt {
+  color: #d4dcd8;
+  font-size: 11px;
+}
+
+.flows dd {
+  margin: 5px 0 0;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+}
+
+.participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 10px 0 0;
+  color: #d4dcd8;
+  font-size: 11px;
+}
+
+.participants strong {
+  margin-left: 3px;
+  color: #fff;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.coverageSummary {
+  align-items: flex-start;
+  margin: 12px 0 0;
+  color: #d4dcd8;
+  font-size: 11px;
+}
+
+.coverageSummary svg {
+  flex: 0 0 14px;
+  margin-top: 2px;
+}
+
+.evidence {
+  margin-top: 12px;
+  padding: 18px 18px 0;
+  background: #fff;
+}
+
+.evidence + * {
+  margin-top: 12px;
+}
+
+.heading {
+  margin: 0 0 12px;
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.scores,
+.breakdown,
+.metrics,
+.coverage {
+  margin: 0;
+}
+
+.scores dt,
+.metrics dt {
+  color: #626864;
+  font-size: 11px;
+}
+
+.evidenceText {
+  margin: 0 0 12px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.ruleCaption {
+  margin: 0 0 12px;
+  color: #626864;
+  font-size: 11px;
+}
+
+.detailHeading {
+  margin: 12px 0 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.scores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding-top: 2px;
+}
+
+.scores dd {
+  margin: 3px 0 0;
+  font-size: 21px;
+  line-height: 1.3;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.scores dd span {
+  font-size: 11px;
+  font-weight: 400;
+  color: #626864;
+}
+
+.note {
+  margin: 8px 0 12px;
+  font-size: 11px;
+  color: #626864;
+}
+
+.details {
+  border-top: 1px solid #e4e5e1;
+}
+
+.details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: #171a19;
+  transition: background-color 150ms ease;
+}
+
+.details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.details > summary:hover {
+  background: #f4f3ef;
+}
+
+.details > summary:focus-visible {
+  outline: 2px solid #b7e45c;
+  outline-offset: 2px;
+}
+
+.chevron {
+  flex: 0 0 16px;
+  color: #626864;
+  transition: transform 150ms ease;
+}
+
+.details[open] > summary > .chevron {
+  transform: rotate(180deg);
+}
+
+.breakdown,
+.metrics,
+.coverage {
+  padding-bottom: 12px;
+}
+
+.breakdown > div,
+.metrics > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.breakdown > div + div,
+.metrics > div + div,
+.coverage > div + div {
+  border-top: 1px solid #e4e5e1;
+}
+
+.breakdown dt span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #626864;
+}
+
+.breakdown dd,
+.metrics dd {
+  min-width: 0;
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.coverage > div {
+  padding: 9px 0;
+}
+
+.coverage dt {
+  font-weight: 500;
+}
+
+.coverage dd {
+  margin: 4px 0 0;
+  color: #626864;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 40px 18px;
+  background: #f4f3ef;
+  color: #626864;
+}
+
+.empty h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #171a19;
+}
+
+@container (max-width: 380px) {
+  .longGid {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .details > summary,
+  .chevron {
+    transition: none;
+  }
+}

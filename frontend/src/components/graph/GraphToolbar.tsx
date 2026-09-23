@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import type { DashboardResponse } from "@/contracts/api";
 import type {
   WorkspaceState,
@@ -44,13 +44,26 @@ export function GraphToolbar({
           aria-describedby={error ? "gid-error" : undefined}
         />
         <Button type="submit" size="sm" variant="secondary">
-          Найти
+          <ArrowRight size={16} aria-hidden="true" /><span className="sr-only">Найти узел</span>
         </Button>
       </form>
       <div className="graph-filters">
         <label>
+          <span className="sr-only">Глубина окрестности</span>
+          <select aria-label="Глубина окрестности" value={state.graphHops} onChange={(e) => act({ type: "hops", value: Number(e.target.value) as 0 | 1 | 2 })}>
+            <option value={0}>Только узел</option>
+            <option value={1}>1 шаг</option>
+            <option value={2}>2 шага</option>
+          </select>
+        </label>
+        <div className="segmented" role="group" aria-label="Окраска графа">
+          <button type="button" aria-pressed={state.colorBy === "role"} onClick={() => act({ type: "color", value: "role" })}>Роли</button>
+          <button type="button" aria-pressed={state.colorBy === "cluster"} onClick={() => act({ type: "color", value: "cluster" })}>Кластеры</button>
+        </div>
+        <label>
           <span className="sr-only">Кластер</span>
           <select
+            aria-label="Кластер"
             value={state.selectedClusterId ?? "all"}
             onChange={(e) =>
               act({
@@ -65,19 +78,6 @@ export function GraphToolbar({
                 Кластер {c.cluster_id} · {c.n_nodes}
               </option>
             ))}
-          </select>
-        </label>
-        <label>
-          <span className="sr-only">Глубина окрестности</span>
-          <select
-            value={state.graphHops}
-            onChange={(e) =>
-              act({ type: "hops", value: Number(e.target.value) as 0 | 1 | 2 })
-            }
-          >
-            <option value={0}>Только узел</option>
-            <option value={1}>1 переход</option>
-            <option value={2}>2 перехода</option>
           </select>
         </label>
       </div>
