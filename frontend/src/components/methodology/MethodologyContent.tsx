@@ -29,6 +29,7 @@ export function MethodologyContent() {
 
       <section className={styles.section}>
         <h2>Показатели узла</h2>
+        <p className={styles.scrollHint}>На узком экране таблицу можно прокручивать по горизонтали.</p>
         <div className={styles.tableWrap} role="region" aria-label="Показатели узла" tabIndex={0}>
           <table>
             <thead><tr><th>Показатель</th><th>Значение</th></tr></thead>
@@ -46,6 +47,7 @@ export function MethodologyContent() {
       <section className={styles.section}>
         <h2>Правила ролей</h2>
         <p>Применяется первое подходящее правило сверху вниз. Значение role_score — выраженность признаков, не вероятность.</p>
+        <p className={styles.scrollHint}>На узком экране таблицу можно прокручивать по горизонтали.</p>
         <div className={styles.tableWrap} role="region" aria-label="Условия назначения ролей" tabIndex={0}>
           <table>
             <thead><tr><th>Правило</th><th>Роль</th><th>Условие</th></tr></thead>
@@ -65,7 +67,9 @@ export function MethodologyContent() {
       <section className={styles.section}>
         <h2>Приоритет ручной проверки</h2>
         <p>Ранг строится по взвешенным перцентилям наблюдаемых метрик и весу выбранной роли:</p>
-        <pre className={styles.formula}>priority = 0,30·P(I) + 0,20·P(Uin) + 0,20·P(B) + 0,20·P(S) + 0,10·W(role)</pre>
+        <pre className={styles.formula} tabIndex={0} aria-label="Формула приоритета ручной проверки">
+          {"priority = 0,30·P(I) + 0,20·P(Uin) + 0,20·P(B) + 0,20·P(S) + 0,10·W(role)"}
+        </pre>
         <p>
           P(x)=0 при x ≤ 0 или N ≤ 1; иначе P(x) — число узлов u с xᵤ &lt; x, делённое на N−1.
           W(role): координатор 1,0; консолидатор 0,95;
@@ -113,3 +117,4 @@ export function MethodologyContent() {
     </main>
   );
 }
+
