@@ -94,11 +94,13 @@ export function AnalystPanel({ analysisId, focusGids, onSelectGid }: AnalystPane
           <p className={styles.muted}>{t("analyst.originalLanguage")}</p>
           {response.mode === "fallback" && (
             <p className={styles.fallbackNote}>
-              {response.fallback_reason === "disabled"
-                ? t("analyst.disabled")
-                : response.fallback_reason === "timeout"
-                  ? t("analyst.timeout")
-                  : t("analyst.fallback")}
+              {t(
+                response.fallback_reason === "disabled"
+                  ? "analyst.fallbackDisabled"
+                  : response.fallback_reason === "timeout"
+                    ? "analyst.fallbackTimeout"
+                    : "analyst.fallback",
+              )}
             </p>
           )}
           {response.mode === "live" && response.answer.status === "insufficient_data" && (
