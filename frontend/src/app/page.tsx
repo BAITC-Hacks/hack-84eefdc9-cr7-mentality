@@ -1,5 +1,5 @@
-// F2 handoff stub: replace with landing + POST analyze workflow.
-import { redirect } from "next/navigation";
+import { LandingPage } from "@/components/landing/LandingPage";
+
 export default function Home() {
-  redirect("/workspace");
+  return <LandingPage />;
 }
