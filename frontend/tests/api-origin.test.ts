@@ -1,14 +1,23 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { startAnalysis, fetchDashboard, exportDownloadUrl } from "../src/lib/analysis-api";
 import { postAssistant } from "../src/lib/assistant-api";
+
+const examples = JSON.parse(
+  readFileSync(new URL("../../docs/api-examples.json", import.meta.url), "utf8"),
+);
 
 test("landing, exports and assistant use the backend origin with and without configuration", async (t) => {
   const original = process.env.NEXT_PUBLIC_API_BASE_URL;
   const urls: string[] = [];
   t.mock.method(globalThis, "fetch", async (url: string) => {
     urls.push(url);
-    return new Response("{}", { status: 200 });
+    return Response.json(
+      url.endsWith("/assistant") ? examples.assistant_response
+        : url.endsWith("/analyze") ? examples.analyze_response
+          : examples.dashboard_response,
+    );
   });
   try {
     for (const configured of [undefined, "https://api.example.test/api/v1/"]) {
