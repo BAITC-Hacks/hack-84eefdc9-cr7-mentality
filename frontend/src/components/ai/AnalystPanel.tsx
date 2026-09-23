@@ -90,10 +90,14 @@ export function AnalystPanel({ analysisId, focusGids, onSelectGid }: AnalystPane
           </div>
           {response.mode === "fallback" && (
             <p className={styles.fallbackNote}>
-              Сервис ИИ недоступен. Ниже показаны правила и факты анализа.
+              {response.fallback_reason === "disabled"
+                ? "ИИ-пояснения отключены. Ниже показаны рассчитанные правила и факты анализа."
+                : response.fallback_reason === "timeout"
+                  ? "ИИ не ответил вовремя. Повторите запрос; ниже доступны рассчитанные факты."
+                  : "Не удалось получить ИИ-пояснение. Ниже показаны рассчитанные правила и факты анализа."}
             </p>
           )}
-          {response.answer.status === "insufficient_data" && (
+          {response.mode === "live" && response.answer.status === "insufficient_data" && (
             <p className={styles.fallbackNote}>Недостаточно данных для этого вопроса.</p>
           )}
           <p className={styles.summary}>{response.answer.summary}</p>
