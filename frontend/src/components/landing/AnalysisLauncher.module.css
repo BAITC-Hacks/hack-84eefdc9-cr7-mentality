@@ -17,6 +17,7 @@
   color: var(--f2-surface, #FFFFFF);
   background: var(--f2-primary-dark, #182D2A);
   border-radius: 4px;
+  animation: f2-enter 520ms cubic-bezier(.2, .7, .2, 1) both;
 }
 
 .kicker,
@@ -54,6 +55,15 @@
   border: 1px solid var(--f2-border, #E4E5E1);
   border-top: 3px solid var(--f2-primary, #244A43);
   border-radius: 4px;
+  animation: f2-enter 560ms 90ms cubic-bezier(.2, .7, .2, 1) both;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+@media (hover: hover) {
+  .dataset:hover {
+    border-color: #c8cec7;
+    box-shadow: 0 8px 22px rgb(24 45 42 / 7%);
+  }
 }
 
 .datasetHeader {
@@ -127,11 +137,13 @@
   font: inherit;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 140ms ease, border-color 140ms ease;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
 .primaryAction:hover:not(:disabled) {
+  background: #acd94f;
   border-color: var(--f2-primary, #244A43);
+  transform: translateY(-1px);
 }
 
 .primaryAction:focus-visible,
@@ -175,6 +187,11 @@
   font-size: 12px;
 }
 
+@keyframes f2-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 600px) {
   .page { padding-inline: 16px; }
   .content { padding-top: 30px; }
@@ -187,6 +204,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .intro,
+  .dataset { animation: none; }
+  .dataset,
   .primaryAction { transition: none; }
+  .primaryAction:hover:not(:disabled) { transform: none; }
 }
 

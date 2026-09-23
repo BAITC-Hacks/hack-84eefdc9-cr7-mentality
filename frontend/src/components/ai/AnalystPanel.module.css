@@ -189,6 +189,11 @@
   background: var(--f2-canvas, #f4f3ef);
   border: 1px solid var(--f2-border, #e4e5e1);
   border-radius: 4px;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+@media (hover: hover) {
+  .finding:hover { border-color: #c8cec7; }
 }
 
 .finding h4 {
@@ -219,6 +224,7 @@
   border-radius: 4px;
   font: inherit;
   cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease;
 }
 
 .evidenceLink:hover {
@@ -284,5 +290,7 @@
   .spinner {
     animation: none;
   }
+  .finding,
+  .evidenceLink { transition: none; }
 }
 

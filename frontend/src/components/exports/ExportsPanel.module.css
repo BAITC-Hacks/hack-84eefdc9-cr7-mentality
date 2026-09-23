@@ -69,6 +69,11 @@
   background: var(--f2-surface, #FFFFFF);
   border: 1px solid var(--f2-border, #E4E5E1);
   border-top: 0;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+@media (hover: hover) {
+  .row:hover { background: #fafbf8; }
 }
 
 .row h2 {
@@ -101,7 +106,7 @@
   font: inherit;
   font-weight: 650;
   text-decoration: none;
-  transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
 .download {
@@ -113,6 +118,7 @@
   color: var(--f2-primary-dark, #182D2A);
   background: var(--f2-accent, #B7E45C);
   border-color: var(--f2-accent, #B7E45C);
+  transform: translateY(-1px);
 }
 
 .action {
@@ -123,6 +129,7 @@
 
 .action:hover {
   border-color: var(--f2-primary, #244A43);
+  transform: translateY(-1px);
 }
 
 .download:focus-visible,
@@ -170,7 +177,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .row,
   .download,
   .action { transition: none; }
+  .download:hover,
+  .action:hover { transform: none; }
 }
 
