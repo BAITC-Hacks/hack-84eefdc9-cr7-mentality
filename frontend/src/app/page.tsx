@@ -1,5 +1,15 @@
-// F2 handoff stub: replace with landing + POST analyze workflow.
-import { redirect } from "next/navigation";
-export default function Home() {
-  redirect("/workspace");
+"use client";
+
+import { useRouter } from "next/navigation";
+import { AnalysisLauncher } from "../components/landing/AnalysisLauncher";
+
+export default function LandingPage() {
+  const router = useRouter();
+  return (
+    <AnalysisLauncher
+      onAnalysisStarted={(analysisId) => {
+        router.push(`/workspace?analysis=${encodeURIComponent(analysisId)}`);
+      }}
+    />
+  );
 }
