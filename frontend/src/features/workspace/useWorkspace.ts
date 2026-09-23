@@ -3,7 +3,6 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import {
   analyze,
   ApiError,
-  errorMessage,
   getDashboard,
   getGraph,
   isAbort,
@@ -26,7 +25,7 @@ function useResource<T>(
   const [result, setResult] = useState<{
     key: string;
     data?: T;
-    error?: string;
+    error?: Error;
   } | null>(null);
   useEffect(() => {
     if (!key) return;
@@ -39,7 +38,7 @@ function useResource<T>(
       })
       .catch((error) => {
         if (active && !isAbort(error))
-          setResult({ key, error: errorMessage(error) });
+          setResult({ key, error: error instanceof Error ? error : new Error("Unknown error") });
       });
     return () => {
       active = false;
@@ -88,7 +87,7 @@ export function useWorkspace(
   }
   const [revision, reload] = useReducer((n: number) => n + 1, 0);
   const [running, setRunning] = useState(false);
-  const [runError, setRunError] = useState<string | null>(null);
+  const [runError, setRunError] = useState<Error | null>(null);
   const runController = useRef<AbortController | null>(null);
   const summaryLoader = useCallback(
     async (signal: AbortSignal) => {
@@ -203,7 +202,7 @@ export function useWorkspace(
         reload();
       }
     } catch (error) {
-      if (!isAbort(error)) setRunError(errorMessage(error));
+      if (!isAbort(error)) setRunError(error instanceof Error ? error : new Error("Unknown error"));
     } finally {
       if (runController.current === controller) {
         runController.current = null;

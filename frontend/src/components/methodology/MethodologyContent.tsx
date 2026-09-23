@@ -1,114 +1,72 @@
+"use client";
+
+import Link from "next/link";
+import { PreferencesControls } from "@/components/preferences/PreferencesControls";
+import { useI18n } from "@/components/preferences/PreferencesProvider";
 import styles from "./MethodologyContent.module.css";
 
-const roles = [
-  { id: "R1", name: "Координатор", rule: "depth < 4; Uin ≥ 2; Uout ≥ 2; S ≥ 3; B > 0 и B ≥ Q95(B+)." },
-  { id: "R2", name: "Распределитель", rule: "depth < 4; Uout ≥ 8." },
-  { id: "R3", name: "Консолидатор", rule: "ratio_usable; Uin ≥ 3; r ≤ 0,35." },
-  { id: "R4", name: "Транзитный узел", rule: "ratio_usable; Uin ≥ 1; Uout ≥ 1; 0,8 ≤ r ≤ 1,2." },
-  { id: "R5", name: "Конечный узел", rule: "ratio_usable; Uin ≥ 1; r ≤ 0,05." },
-  { id: "R6", name: "Периферийный узел", rule: "Ни одно предыдущее правило не сработало." },
-];
+const roleIds = ["R1", "R2", "R3", "R4", "R5", "R6"] as const;
+const metrics = ["flows", "degree", "ratio", "seeds", "centrality"] as const;
+const metricSymbols = { flows: "I / O", degree: "Uin / Uout", ratio: "r = O / I", seeds: "S", centrality: "B" };
+const limitations = ["depth", "seed", "outflow", "difference", "coverage"] as const;
 
 export function MethodologyContent() {
+  const { t } = useI18n("extras");
+
   return (
     <main className={styles.page}>
+      <div className={styles.toolbar}>
+        <Link href="/">← {t("common.home")}</Link>
+        <PreferencesControls />
+      </div>
       <header className={styles.header}>
-        <p className={styles.eyebrow}>Документация анализа</p>
-        <h1>Методология</h1>
-        <p>Правила, приоритеты и ограничения данных, которые важно учитывать при проверке графа.</p>
+        <p className={styles.eyebrow}>{t("methodology.eyebrow")}</p>
+        <h1>{t("methodology.title")}</h1>
+        <p>{t("methodology.description")}</p>
       </header>
-
       <section className={styles.section} aria-labelledby="how-to-read">
-        <h2 id="how-to-read">Как читать результаты</h2>
-        <p>
-          Граф показывает наблюдаемые направленные переводы внутри предоставленной выгрузки.
-          Роль и приоритет помогают выбрать узлы для ручной проверки, но не устанавливают намерения,
-          личность организатора или движение конкретных денежных средств и не являются выводом о виновности.
-        </p>
+        <h2 id="how-to-read">{t("methodology.readTitle")}</h2>
+        <p>{t("methodology.readDescription")}</p>
       </section>
-
       <section className={styles.section}>
-        <h2>Показатели узла</h2>
-        <div className={styles.tableWrap} role="region" aria-label="Показатели узла" tabIndex={0}>
+        <h2>{t("methodology.metricsTitle")}</h2>
+        <div className={styles.tableWrap} role="region" aria-label={t("methodology.metricsTitle")} tabIndex={0}>
           <table>
-            <thead><tr><th>Показатель</th><th>Значение</th></tr></thead>
-            <tbody>
-              <tr><th>I / O</th><td>Наблюдаемые входящая и исходящая суммы без self-transfer.</td></tr>
-              <tr><th>Uin / Uout</th><td>Число различных плательщиков и получателей.</td></tr>
-              <tr><th>r = O / I</th><td>Отношение потоков, когда I &gt; 0 и узел не seed и не на глубине 4.</td></tr>
-              <tr><th>S</th><td>Число других seed, от которых до узла есть направленный путь длиной 1–4.</td></tr>
-              <tr><th>B</th><td>Направленная betweenness centrality; сумма перевода не считается расстоянием.</td></tr>
-            </tbody>
+            <thead><tr><th>{t("methodology.metric")}</th><th>{t("methodology.meaning")}</th></tr></thead>
+            <tbody>{metrics.map((metric) => <tr key={metric}><th>{metricSymbols[metric]}</th><td>{t(`methodology.metric.${metric}`)}</td></tr>)}</tbody>
           </table>
         </div>
       </section>
-
       <section className={styles.section}>
-        <h2>Правила ролей</h2>
-        <p>Применяется первое подходящее правило сверху вниз. Значение role_score — выраженность признаков, не вероятность.</p>
-        <div className={styles.tableWrap} role="region" aria-label="Условия назначения ролей" tabIndex={0}>
+        <h2>{t("methodology.rolesTitle")}</h2>
+        <p>{t("methodology.rolesDescription")}</p>
+        <div className={styles.tableWrap} role="region" aria-label={t("methodology.rolesLabel")} tabIndex={0}>
           <table>
-            <thead><tr><th>Правило</th><th>Роль</th><th>Условие</th></tr></thead>
-            <tbody>
-              {roles.map((role) => (
-                <tr key={role.id}><th>{role.id}</th><td>{role.name}</td><td><code>{role.rule}</code></td></tr>
-              ))}
-            </tbody>
+            <thead><tr><th>{t("methodology.rule")}</th><th>{t("methodology.role")}</th><th>{t("methodology.condition")}</th></tr></thead>
+            <tbody>{roleIds.map((id) => <tr key={id}><th>{id}</th><td>{t(`methodology.role.${id}`)}</td><td><code>{t(`methodology.rule.${id}`)}</code></td></tr>)}</tbody>
           </table>
         </div>
-        <p className={styles.note}>
-          Для R1 порог Q95(B+) рассчитывается по строго положительным B; если таких значений нет, правило выключено.
-          Для R6 role_score равен 0,1 у изолированного узла или глубины 4, иначе 0,3.
-        </p>
+        <p className={styles.note}>{t("methodology.rolesNote")}</p>
       </section>
-
       <section className={styles.section}>
-        <h2>Приоритет ручной проверки</h2>
-        <p>Ранг строится по взвешенным перцентилям наблюдаемых метрик и весу выбранной роли:</p>
-        <pre className={styles.formula}>priority = 0,30·P(I) + 0,20·P(Uin) + 0,20·P(B) + 0,20·P(S) + 0,10·W(role)</pre>
-        <p>
-          P(x)=0 при x ≤ 0 или N ≤ 1; иначе P(x) — число узлов u с xᵤ &lt; x, делённое на N−1.
-          W(role): координатор 1,0; консолидатор 0,95;
-          распределитель 0,85; транзитный узел 0,65; конечный узел 0,55; периферийный 0,10.
-        </p>
-        <p>
-          Для изолированных узлов приоритет равен нулю. Сортировка детерминирована: score по убыванию,
-          затем числовой gid по возрастанию. Это очередь ручной проверки, не рейтинг виновности.
-        </p>
+        <h2>{t("methodology.priorityTitle")}</h2>
+        <p>{t("methodology.priorityDescription")}</p>
+        <pre className={styles.formula}>priority = 0.30·P(I) + 0.20·P(Uin) + 0.20·P(B) + 0.20·P(S) + 0.10·W(role)</pre>
+        <p>{t("methodology.priorityFormula")}</p>
+        <p>{t("methodology.priorityOrder")}</p>
       </section>
-
       <section className={styles.section}>
-        <h2>Кластеры и направление</h2>
-        <p>
-          Для неориентированной проекции сначала складываются суммы обоих направлений между парой узлов,
-          вес равен log1p этой суммы, self-loops исключаются. Louvain запускается по компонентам с рёбрами,
-          resolution=1, seed=42.
-          Betweenness направленная, нормализованная, с k=min(128,N), seed=42 и без денежного веса.
-          Изолированный узел получает отдельный кластер. Направление и суммы рёбер на графе остаются исходными.
-        </p>
+        <h2>{t("methodology.clustersTitle")}</h2>
+        <p>{t("methodology.clustersDescription")}</p>
       </section>
-
       <section className={`${styles.section} ${styles.limits}`}>
-        <h2>Ограничения данных</h2>
-        <ul>
-          <li><strong>Глубина 4:</strong> исходящие переводы могут быть обрезаны. Нулевой O не подтверждает, что узел конечный.</li>
-          <li><strong>Seed:</strong> входящий поток неполный, поэтому отношение потоков не используется для роли.</li>
-          <li><strong>O &gt; I:</strong> это предупреждение о неполноте покрытия, не «аномальная прибыль».</li>
-          <li><strong>I − O:</strong> не называется балансом или остатком средств.</li>
-          <li><strong>Покрытие:</strong> порог 5 000 KZT, границы периода и внутрибанковское покрытие ограничивают наблюдаемую картину.</li>
-        </ul>
-        <p className={styles.depthExample}>
-          Для узла на глубине 4: видны входящие переводы; исходящие неизвестны из-за обрыва на 4-м колене.
-          Конечный получатель не подтверждён.
-        </p>
+        <h2>{t("methodology.limitsTitle")}</h2>
+        <ul>{limitations.map((limit) => <li key={limit}><strong>{t(`methodology.limit.${limit}.title`)}:</strong> {t(`methodology.limit.${limit}.description`)}</li>)}</ul>
+        <p className={styles.depthExample}>{t("methodology.depthExample")}</p>
       </section>
-
       <section className={styles.section}>
-        <h2>Пояснение ИИ</h2>
-        <p>
-          ИИ получает факты выбранных узлов и объясняет их простым языком. Если сервис недоступен,
-          граф, ранжирование и CSV продолжают работать. Любое пояснение остаётся гипотезой для проверки.
-        </p>
+        <h2>{t("methodology.aiTitle")}</h2>
+        <p>{t("methodology.aiDescription")}</p>
       </section>
     </main>
   );

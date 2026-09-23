@@ -8,7 +8,6 @@ import {
   FlaskConical,
   Info,
   Network,
-  Play,
   RotateCw,
   ShieldCheck,
 } from "lucide-react";
@@ -23,16 +22,23 @@ import { GraphLegend } from "@/components/graph/GraphLegend";
 import { Button } from "@/components/ui/button";
 import { ErrorState, Loading } from "@/components/ui/Status";
 import { canonicalGid, dateLabel, money } from "@/lib/format";
-import { roles } from "@/lib/role-colors";
+import { useI18n } from "@/components/preferences/PreferencesProvider";
 import { getExportUrl } from "@/lib/api";
 import { demoAvailable, useWorkspace } from "./useWorkspace";
 import { clusterIdFromParam } from "./types";
+import { AnalysisStart } from "./AnalysisStart";
 const NetworkGraph = dynamic(() => import("@/components/graph/NetworkGraph"), {
   ssr: false,
-  loading: () => <Loading label="Подготавливаем граф…" />,
+  loading: () => <GraphLoading />,
 });
 
+function GraphLoading() {
+  const { t } = useI18n("workspace");
+  return <Loading label={t("graph.preparing")} />;
+}
+
 export function Workspace() {
+  const { t, intlLocale } = useI18n("workspace");
   const params = useSearchParams();
   const rawGid = params.get("gid");
   const rawClusterId = params.get("cluster_id");
@@ -76,21 +82,21 @@ export function Workspace() {
   const data = summary.data;
   return (
     <AppShell analysisId={state.analysisId} demo={isDemo}>
-      <main className="workspace">
+      <main className={`workspace ${state.analysisId ? "workspace-results" : "workspace-intro"}`}>
         <div className="page-heading">
           <div>
             <div className="eyebrow">
               <span />
-              ИССЛЕДОВАНИЕ ТРАНЗАКЦИЙ
+              {t("heading.eyebrow")}
             </div>
-            <h1>Обзор сети</h1>
-            <p>Находите связи. Проверяйте гипотезы. Следуйте за потоком.</p>
+            <h1>{t("heading.title")}</h1>
+            <p>{t("heading.description")}</p>
           </div>
           <div className="heading-actions">
             {data && (
               <span className="period">
                 <CalendarDays size={15} />
-                {dateLabel(data.period.start)} — {dateLabel(data.period.end)}
+                {dateLabel(data.period.start, intlLocale)} — {dateLabel(data.period.end, intlLocale)}
               </span>
             )}
             <Button
@@ -99,60 +105,30 @@ export function Workspace() {
               disabled={running}
             >
               <RotateCw size={15} className={running ? "spin" : ""} />
-              {state.analysisId ? "Обновить" : "Подключиться"}
+              {state.analysisId ? t("refresh") : t("connect")}
             </Button>
           </div>
         </div>
         {isDemo && (
           <div className="demo-banner">
             <FlaskConical size={17} />
-            <strong>Демонстрация UI</strong>
+            <strong>{t("demo.title")}</strong>
             <span>
-              Синтетические данные. Реальный анализ и ИИ не запускались.
+              {t("demo.description")}
             </span>
-            <a href="/workspace">Перейти к API →</a>
+            <a href="/workspace">{t("demo.api")}</a>
           </div>
         )}
         {runError && <ErrorState message={runError} onRetry={startAnalysis} />}
         {!state.analysisId ? (
-          <section className="panel start-panel">
-            <div className="start-icon">
-              <Network size={37} />
-            </div>
-            <span className="eyebrow">НОВОЕ ИССЛЕДОВАНИЕ</span>
-            <h2>Увидеть структуру денежных потоков</h2>
-            <p>
-              Запустите расчёт подготовленного датасета, чтобы открыть
-              приоритетные узлы, связи и признаки ролей.
-            </p>
-            <Button onClick={startAnalysis} disabled={running}>
-              <Play size={16} />
-              {running ? "Выполняется расчёт…" : "Запустить анализ"}
-            </Button>
-            {running && (
-              <p role="status">
-                Расчёт может занять до 5 минут. Подготовленный результат
-                загрузится быстрее.
-              </p>
-            )}
-            {demoAvailable && (
-              <a className="demo-link" href="/workspace?demo=1">
-                Открыть демонстрацию интерфейса
-              </a>
-            )}
-            <div className="start-note">
-              <ShieldCheck size={16} />
-              Приоритет помогает аналитической проверке и не устанавливает
-              виновность.
-            </div>
-          </section>
+          <AnalysisStart onStart={startAnalysis} running={running} showDemo={demoAvailable} />
         ) : (
           <>
             {summary.loading && (
               <div
                 className="summary-skeleton"
                 role="status"
-                aria-label="Загружаем сводку"
+                aria-label={t("summary.loading")}
               >
                 {[1, 2, 3, 4].map((n) => (
                   <div key={n} />
@@ -166,34 +142,28 @@ export function Workspace() {
               <>
                 <SummaryCards data={data} />
                 <details className="coverage-details">
-                  <summary>Покрытие данных и оборот по self-transfers</summary>
+                  <summary>{t("coverage.summary")}</summary>
                   <p>
-                    Слабых компонент: {data.stats.n_weak_components}.
-                    Изолированных узлов: {data.stats.n_isolated_nodes}. Узлов на
-                    4-м колене: {data.stats.n_depth4_censored}.
+                    {t("coverage.stats", { components: data.stats.n_weak_components, isolated: data.stats.n_isolated_nodes, depth: data.stats.n_depth4_censored })}
                   </p>
                   <p>
-                    Переводы самому себе:{" "}
-                    {money(data.stats.self_transfer_turnover_kzt)}. Они учтены в
-                    обороте отдельно от структурных метрик.
+                    {t("coverage.selfTransfers", { amount: money(data.stats.self_transfer_turnover_kzt, true, intlLocale) })}
                   </p>
                 </details>
                 <div className="coverage-notice">
                   <Info size={16} />
                   <span>
-                    <strong>Границы наблюдения:</strong> внутрибанковские
-                    переводы от 5 000 ₸, до 4-го колена. Роли — гипотезы для
-                    проверки.
+                    <strong>{t("coverage.title")}</strong>{" "}{t("coverage.notice")}
                   </span>
-                  <a href="/methodology">Подробнее ↗</a>
+                  <a href="/methodology">{t("details")}</a>
                 </div>
                 {data.warnings.length > 0 && (
                   <details className="api-warnings">
                     <summary>
-                      Замечания к анализу ({data.warnings.length})
+                      {t("warnings.title", { count: data.warnings.length })}
                     </summary>
                     {data.warnings.map((warning, i) => (
-                      <p key={i}>{warning.message}</p>
+                      <p key={i}>{warning.code === "SYNTHETIC_UI" ? t("demo.warning") : warning.message}</p>
                     ))}
                   </details>
                 )}
@@ -204,6 +174,7 @@ export function Workspace() {
                 {data ? (
                   <PriorityTable
                     data={data}
+                    isDemo={isDemo}
                     selectedGid={selectedNode?.gid ?? state.selectedGid}
                     onSelectGid={onSelectGid}
                     onPage={(offset) => act({ type: "page", offset })}
@@ -212,10 +183,10 @@ export function Workspace() {
                   <section className="panel">
                     {summary.error ? (
                       <p className="empty-text">
-                        Рейтинг недоступен. Повторите загрузку сводки.
+                        {t("ranking.unavailable")}
                       </p>
                     ) : (
-                      <Loading label="Ожидаем рейтинг узлов…" />
+                      <Loading label={t("ranking.wait")} />
                     )}
                   </section>
                 )}
@@ -226,17 +197,17 @@ export function Workspace() {
                     <div>
                       <h2>
                         <Network size={17} />
-                        Карта связей
+                        {t("graph.title")}
                       </h2>
-                      <p>Исследуйте направленные денежные потоки</p>
+                      <p>{t("graph.description")}</p>
                     </div>
-                    <div className="segmented" aria-label="Окраска графа">
+                    <div className="segmented" aria-label={t("graph.color")}>
                       <button
                         aria-pressed={state.colorBy === "role"}
                         className={state.colorBy === "role" ? "selected" : ""}
                         onClick={() => act({ type: "color", value: "role" })}
                       >
-                        По ролям
+                        {t("graph.byRole")}
                       </button>
                       <button
                         aria-pressed={state.colorBy === "cluster"}
@@ -245,7 +216,7 @@ export function Workspace() {
                         }
                         onClick={() => act({ type: "color", value: "cluster" })}
                       >
-                        По кластерам
+                        {t("graph.byCluster")}
                       </button>
                     </div>
                   </div>
@@ -256,7 +227,7 @@ export function Workspace() {
                     onSelectGid={onSelectGid}
                   />
                   <div className="graph-stage">
-                    {graph.loading && <Loading label="Загружаем связи узла…" />}
+                    {graph.loading && <Loading label={t("graph.loading")} />}
                     {graph.error && (
                       <ErrorState message={graph.error} onRetry={retry} />
                     )}
@@ -269,21 +240,19 @@ export function Workspace() {
                         />
                       ) : (
                         <p className="empty-text">
-                          В выбранной области нет узлов.
+                          {t("graph.empty")}
                         </p>
                       ))}
                   </div>
                   {graph.data?.truncated && (
                     <div className="truncated-notice" role="status">
-                      Показано {graph.data.nodes.length} из{" "}
-                      {graph.data.matched_nodes} узлов. Выбранный узел сохранён;
-                      метрики рассчитаны по полному анализу.
+                      {t("graph.truncated", { shown: graph.data.nodes.length, total: graph.data.matched_nodes })}
                     </div>
                   )}
                   <GraphLegend colorBy={state.colorBy} data={graph.data} />
                   {graph.data && (
                     <details className="accessible-graph">
-                      <summary>Узлы и связи списком</summary>
+                      <summary>{t("graph.list")}</summary>
                       <div className="node-button-list">
                         {graph.data.nodes.map((node) => (
                           <button
@@ -291,19 +260,19 @@ export function Workspace() {
                             onClick={() => onSelectGid(node.gid)}
                           >
                             {node.gid}
-                            <span>{roles[node.role].label}</span>
+                            <span>{t(`role.${node.role}`)}</span>
                           </button>
                         ))}
                       </div>
                       <div className="table-scroll">
                         <table>
-                          <caption>Все связи показанного подграфа</caption>
+                          <caption>{t("graph.tableCaption")}</caption>
                           <thead>
                             <tr>
-                              <th>Отправитель</th>
-                              <th>Получатель</th>
-                              <th>Сумма</th>
-                              <th>Переводов</th>
+                              <th>{t("sender")}</th>
+                              <th>{t("recipient")}</th>
+                              <th>{t("amount")}</th>
+                              <th>{t("transfers")}</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -311,7 +280,7 @@ export function Workspace() {
                               <tr key={i}>
                                 <td>{e.source}</td>
                                 <td>{e.target}</td>
-                                <td>{money(e.sum_kzt)}</td>
+                                <td>{money(e.sum_kzt, true, intlLocale)}</td>
                                 <td>{e.n_tx}</td>
                               </tr>
                             ))}
@@ -323,14 +292,13 @@ export function Workspace() {
                 </section>
                 {data && <DailyFlowChart data={data.charts.daily_flow} />}
               </div>
-              <NodeDrawer node={selectedNode} onSelectGid={onSelectGid}>
+              <NodeDrawer node={selectedNode} onSelectGid={onSelectGid} isDemo={isDemo}>
                 {selectedNode &&
                   (isDemo ? (
                     <div className="analyst-placeholder">
-                      <h3>Объяснение по данным</h3>
+                      <h3>{t("demo.explanation")}</h3>
                       <p>
-                        В режиме демонстрации запросы ИИ отключены. Признаки
-                        узла показаны выше.
+                        {t("demo.aiDisabled")}
                       </p>
                     </div>
                   ) : (
@@ -348,8 +316,8 @@ export function Workspace() {
                 <span>
                   <ShieldCheck size={14} />
                   {isDemo
-                    ? "Синтетический пример"
-                    : `Анализ ${state.analysisId}`}{" "}
+                    ? t("demo.example")
+                    : t("analysis.id", { id: state.analysisId ?? "" })}{" "}
                   · {data.algorithm_version}
                 </span>
                 {!isDemo && (

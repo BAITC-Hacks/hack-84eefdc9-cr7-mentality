@@ -1,32 +1,35 @@
+"use client";
+import { useI18n } from "@/components/preferences/PreferencesProvider";
 import { ArrowLeftRight, CircleDot, Layers3, Wallet } from "lucide-react";
 import type { DashboardResponse } from "@/contracts/api";
 import { compactMoney, integer, money } from "@/lib/format";
 export function SummaryCards({ data }: { data: DashboardResponse }) {
+  const { t, intlLocale } = useI18n("workspace");
   const { stats } = data;
   const cards = [
     {
-      label: "Наблюдаемый оборот",
-      value: compactMoney(stats.graph_turnover_kzt),
-      hint: "Сумма переводов за период",
+      label: t("summary.turnover"),
+      value: compactMoney(stats.graph_turnover_kzt, intlLocale),
+      hint: t("summary.turnoverHint"),
       icon: Wallet,
-      title: money(stats.graph_turnover_kzt),
+      title: money(stats.graph_turnover_kzt, true, intlLocale),
     },
     {
-      label: "Узлов в сети",
-      value: integer(stats.n_nodes),
-      hint: `${integer(stats.n_seed)} исходных seed-узлов`,
+      label: t("summary.nodes"),
+      value: integer(stats.n_nodes, intlLocale),
+      hint: t("summary.seeds", { count: integer(stats.n_seed, intlLocale) }),
       icon: CircleDot,
     },
     {
-      label: "Направленных связей",
-      value: integer(stats.n_edges),
-      hint: `${integer(stats.n_transactions)} транзакций`,
+      label: t("summary.edges"),
+      value: integer(stats.n_edges, intlLocale),
+      hint: t("transactions.count", { count: integer(stats.n_transactions, intlLocale) }),
       icon: ArrowLeftRight,
     },
     {
-      label: "Кластеров",
-      value: integer(stats.n_clusters),
-      hint: "Сообщества по структуре связей",
+      label: t("summary.clusters"),
+      value: integer(stats.n_clusters, intlLocale),
+      hint: t("summary.clustersHint"),
       icon: Layers3,
     },
   ];

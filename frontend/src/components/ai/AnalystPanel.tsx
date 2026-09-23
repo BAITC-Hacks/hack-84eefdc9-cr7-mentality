@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useI18n } from "@/components/preferences/PreferencesProvider";
 import type { AnalysisId, Gid } from "../../contracts/api";
 import { useAssistant } from "../../hooks/useAssistant";
 import { FindingCard } from "./FindingCard";
@@ -13,8 +14,9 @@ export type AnalystPanelProps = {
 };
 
 export function AnalystPanel({ analysisId, focusGids, onSelectGid }: AnalystPanelProps) {
+  const { t, intlLocale } = useI18n("extras");
   const [question, setQuestion] = useState("");
-  const { response, error, validationMessage, isLoading, ask, modeLabel } =
+  const { response, error, errorDetail, validationMessage, isLoading, ask, modeLabel } =
     useAssistant(analysisId);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -26,20 +28,20 @@ export function AnalystPanel({ analysisId, focusGids, onSelectGid }: AnalystPane
     <section className={styles.panel} aria-labelledby="analyst-title">
       <header className={styles.header}>
         <div>
-          <p className={styles.eyebrow}>Пояснение к выбранным данным</p>
-          <h3 id="analyst-title">Аналитик</h3>
+          <p className={styles.eyebrow}>{t("analyst.eyebrow")}</p>
+          <h3 id="analyst-title">{t("analyst.title")}</h3>
         </div>
         <span className={styles.scope}>
-          {focusGids.length ? `Узлов: ${focusGids.length}` : "Узел не выбран"}
+          {focusGids.length ? t("analyst.nodeCount", { count: new Intl.NumberFormat(intlLocale).format(focusGids.length) }) : t("analyst.noNode")}
         </span>
       </header>
 
       <form className={styles.form} onSubmit={handleSubmit}>
-        <label htmlFor="assistant-question">Вопрос аналитику</label>
+        <label htmlFor="assistant-question">{t("analyst.question")}</label>
         <textarea
           id="assistant-question"
           onChange={(event) => setQuestion(event.target.value)}
-          placeholder="Почему этот узел стоит проверить?"
+          placeholder={t("analyst.placeholder")}
           rows={3}
           value={question}
         />
@@ -50,17 +52,17 @@ export function AnalystPanel({ analysisId, focusGids, onSelectGid }: AnalystPane
             disabled={isLoading || focusGids.length === 0 || focusGids.length > 5}
             type="submit"
           >
-            {isLoading ? "Готовлю ответ..." : "Спросить аналитика"}
+            {isLoading ? t("analyst.preparing") : t("analyst.ask")}
           </button>
         </div>
         {!focusGids.length && (
           <p className={styles.hint} role="status">
-            Выберите узел в графе, чтобы задать вопрос.
+            {t("analyst.selectNode")}
           </p>
         )}
         {focusGids.length > 5 && (
           <p className={styles.hint} role="status">
-            Для одного запроса выберите не более пяти узлов.
+            {t("analyst.maxNodes")}
           </p>
         )}
         {validationMessage && <p className={styles.error} role="alert">{validationMessage}</p>}
@@ -69,36 +71,38 @@ export function AnalystPanel({ analysisId, focusGids, onSelectGid }: AnalystPane
       {isLoading && (
         <div className={styles.loading} role="status" aria-live="polite">
           <span className={styles.spinner} aria-hidden="true" />
-          Анализирую только факты выбранных узлов...
+          {t("analyst.loading")}
         </div>
       )}
 
       {error && (
         <div className={styles.errorBox} role="alert">
-          <strong>Не удалось получить ответ</strong>
+          <strong>{t("analyst.errorTitle")}</strong>
           <p>{error}</p>
+          {errorDetail && <p>{t("common.serverDetails", { message: errorDetail })}</p>}
         </div>
       )}
 
       {response && (
         <div className={styles.answer} aria-live="polite">
           <div className={styles.answerHeading}>
-            <h4>Пояснение</h4>
+            <h4>{t("analyst.explanation")}</h4>
             <span className={response.mode === "live" ? styles.liveMode : styles.fallbackMode}>
               {modeLabel}
             </span>
           </div>
+          <p className={styles.muted}>{t("analyst.originalLanguage")}</p>
           {response.mode === "fallback" && (
             <p className={styles.fallbackNote}>
               {response.fallback_reason === "disabled"
-                ? "ИИ-пояснения отключены. Ниже показаны рассчитанные правила и факты анализа."
+                ? t("analyst.disabled")
                 : response.fallback_reason === "timeout"
-                  ? "ИИ не ответил вовремя. Повторите запрос; ниже доступны рассчитанные факты."
-                  : "Не удалось получить ИИ-пояснение. Ниже показаны рассчитанные правила и факты анализа."}
+                  ? t("analyst.timeout")
+                  : t("analyst.fallback")}
             </p>
           )}
           {response.mode === "live" && response.answer.status === "insufficient_data" && (
-            <p className={styles.fallbackNote}>Недостаточно данных для этого вопроса.</p>
+            <p className={styles.fallbackNote}>{t("analyst.insufficientData")}</p>
           )}
           <p className={styles.summary}>{response.answer.summary}</p>
           {response.answer.findings.map((finding, index) => (
@@ -111,18 +115,18 @@ export function AnalystPanel({ analysisId, focusGids, onSelectGid }: AnalystPane
           ))}
           {response.answer.missing_data.length > 0 && (
             <section className={styles.answerSection}>
-              <h4>Ограничения данных</h4>
+              <h4>{t("analyst.limits")}</h4>
               <ul>{response.answer.missing_data.map((item) => <li key={item}>{item}</li>)}</ul>
             </section>
           )}
           {response.answer.next_steps.length > 0 && (
             <section className={styles.answerSection}>
-              <h4>Что проверить дальше</h4>
+              <h4>{t("analyst.nextSteps")}</h4>
               <ul>{response.answer.next_steps.map((item) => <li key={item}>{item}</li>)}</ul>
             </section>
           )}
           <p className={styles.disclaimer}>
-            Это структурные признаки для ручной проверки, а не вывод о виновности.
+            {t("analyst.disclaimer")}
           </p>
         </div>
       )}

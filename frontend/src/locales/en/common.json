@@ -1,0 +1,19 @@
+{
+  "meta.title": "Money Graph · Network Analysis",
+  "meta.description": "A workspace for exploring money flows, participants and the connections between them.",
+  "brand": "Money Graph",
+  "brand.subtitle": "FINANCIAL INTELLIGENCE",
+  "preferences.label": "Language and appearance",
+  "preferences.language": "Interface language",
+  "preferences.toDark": "Switch to dark theme",
+  "preferences.toLight": "Switch to light theme",
+  "shell.workspace": "Workspace",
+  "shell.navigation": "Main navigation",
+  "shell.network": "Network overview",
+  "shell.methodology": "Methodology",
+  "shell.exports": "Export data",
+  "shell.hypothesis": "From data to a hypothesis",
+  "shell.scope": "Roles and priority help you choose nodes for manual review.",
+  "shell.demo": "Interface demo",
+  "shell.analysis": "Money flow analysis"
+}

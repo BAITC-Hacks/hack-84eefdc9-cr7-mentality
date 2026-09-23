@@ -1,0 +1,7 @@
+.controls { display: inline-flex; align-items: center; flex-shrink: 0; gap: 6px; color: var(--foreground); font-size: 12px; }
+.language { display: inline-flex; align-items: center; min-height: 38px; gap: 5px; padding: 0 8px 0 11px; background: var(--muted); border: 1px solid var(--border); border-radius: 9999px; }
+.language select { width: 86px; min-height: 36px; border: 0; background: transparent; color: inherit; font-size: 11px; cursor: pointer; }
+.language option { background: var(--card); color: var(--foreground); }
+.theme { display: grid; place-items: center; width: 38px; min-height: 38px; border: 1px solid var(--border); border-radius: 50%; color: var(--foreground); background: var(--muted); }
+.theme:hover { background: var(--secondary); }
+@media (max-width: 390px) { .language { padding-left: 8px; gap: 3px; }.language select { width: 79px; }.controls { gap: 4px; } }

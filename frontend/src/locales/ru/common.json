@@ -1,0 +1,19 @@
+{
+  "meta.title": "Граф денег · Анализ связей",
+  "meta.description": "Рабочее пространство для исследования денежных потоков, участников и связей между ними.",
+  "brand": "Граф денег",
+  "brand.subtitle": "ФИНАНСОВАЯ АНАЛИТИКА",
+  "preferences.label": "Язык и оформление",
+  "preferences.language": "Язык интерфейса",
+  "preferences.toDark": "Включить тёмную тему",
+  "preferences.toLight": "Включить светлую тему",
+  "shell.workspace": "Рабочее пространство",
+  "shell.navigation": "Основная навигация",
+  "shell.network": "Обзор сети",
+  "shell.methodology": "Методология",
+  "shell.exports": "Экспорт данных",
+  "shell.hypothesis": "От данных к гипотезе",
+  "shell.scope": "Роли и приоритет помогают выбрать узлы для ручной проверки.",
+  "shell.demo": "Демонстрация интерфейса",
+  "shell.analysis": "Анализ денежных потоков"
+}
