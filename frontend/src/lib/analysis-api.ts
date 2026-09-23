@@ -1,4 +1,5 @@
 import type { AnalysisId, AnalyzeResponse, DashboardResponse } from "../contracts/api";
+import { apiBaseUrl } from "./api";
 
 type ApiErrorBody = {
   error?: {
@@ -15,8 +16,7 @@ const exportFilenames: ExportFilename[] = [
 ];
 
 function apiUrl(path: string) {
-  const baseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/+$/, "");
-  return `${baseUrl}${path}`;
+  return `${apiBaseUrl()}${path}`;
 }
 
 async function readResponse<T>(response: Response): Promise<T> {

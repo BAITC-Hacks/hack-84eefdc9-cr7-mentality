@@ -1,7 +1,7 @@
 
 # IDE and local secrets
 .idea/
-.env
+backend/.env
 .env.*
 !.env.example
 

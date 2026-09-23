@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 from uuid import uuid4
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
@@ -27,6 +28,10 @@ from .pipeline import (
 )
 from .views import assistant_facts, dashboard_page, graph_view
 
+
+# Resolve the local file independently of the shell's working directory.
+# Deployment environment variables always take precedence over .env.
+load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
 logger = logging.getLogger(__name__)
 
