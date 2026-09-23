@@ -1,10 +1,12 @@
-import type { AnalysisId, AnalyzeResponse, DashboardResponse, ExportFilename } from "../contracts/api";
+import type { AnalysisId, AnalyzeResponse, DashboardResponse } from "../contracts/api";
 
 type ApiErrorBody = {
   error?: {
     message?: string;
   };
 };
+
+type ExportFilename = DashboardResponse["exports"][number]["filename"];
 
 const exportFilenames: ExportFilename[] = [
   "nodes_roles.csv",
@@ -55,3 +57,4 @@ export function exportDownloadUrl(analysisId: AnalysisId, filename: string) {
   const path = exportDownloadPath(analysisId, filename);
   return path ? apiUrl(path) : null;
 }
+
