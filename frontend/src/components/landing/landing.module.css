@@ -1,10 +1,10 @@
 .landing {
-  --dark: #1a3b32;
+  --dark: var(--brand-forest);
   --deep: #12352f;
-  --green: #3bc157;
+  --green: var(--brand-action);
   --ink: #203b33;
   --soft: #f4f6f8;
-  --muted: #7d8d88;
+  --landing-muted: #66786f;
   min-height: 100vh;
   background: #f8fafb;
   color: var(--ink);
@@ -12,16 +12,16 @@
   font-size: 14px;
 }
 .container { width: min(100% - 64px, 1180px); margin: 0 auto; }
-.header { display: flex; align-items: center; gap: 32px; min-height: 90px; background: #fff; }
+.header { display: flex; align-items: center; gap: 18px; min-height: 90px; background: #fff; }
 .logo { display: inline-flex; align-items: center; gap: 9px; white-space: nowrap; color: var(--dark); font-size: 21px; font-weight: 850; letter-spacing: -.07em; }
-.logoAccent, .footerLogo span { color: #30b64e; }
+.logoAccent, .footerLogo span { margin-left: .12em; color: #30b64e; }
 .logoMark { position: relative; display: inline-block; width: 27px; height: 27px; border: 3px solid var(--dark); border-left-color: var(--green); border-radius: 7px; transform: rotate(-8deg); }
 .logoMark i { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
 .logoMark i:nth-child(1) { left: 4px; top: 4px; }.logoMark i:nth-child(2) { right: 3px; top: 10px; }.logoMark i:nth-child(3) { left: 7px; bottom: 3px; }
 .mainNav { display: flex; align-items: center; justify-content: center; gap: clamp(15px, 2.3vw, 35px); flex: 1; }
 .mainNav a, .headerQuiet { color: #42564e; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .mainNav a:hover, .headerQuiet:hover { color: #27a94b; }
-.headerActions { display: flex; align-items: center; gap: 20px; }
+.headerActions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-left: auto; }
 .action { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 43px; padding: 10px 20px; border-radius: 9999px; font-weight: 700; font-size: 12px; white-space: nowrap; transition: transform .2s, background .2s; }
 .action:hover, .arrowButton:hover, .audienceAction:hover { transform: translateY(-2px); }
 .actionPrimary { background: var(--green); color: #fff; }.actionPrimary:hover { background: #2aaf49; }
@@ -47,7 +47,7 @@
 .featureCard { min-height: 205px; padding: 31px 30px; border-radius: 25px; background: #fff; }
 .featureIcon { display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; border-radius: 13px; background: #e7f9df; color: #32ad51; }
 .featureCard h2 { margin-top: 22px; color: #243a31; font-size: 17px; line-height: 1.25; letter-spacing: -.02em; }
-.featureCard p { max-width: 290px; margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.featureCard p { max-width: 290px; margin-top: 7px; color: var(--landing-muted); font-size: 12px; line-height: 1.5; }
 .helpBanner { display: flex; align-items: center; justify-content: space-between; gap: 25px; min-height: 84px; margin-top: 64px; padding: 16px 16px 16px 25px; border-radius: 24px; background: #1b4740; color: #fff; }
 .helpMessage { display: flex; align-items: center; gap: 17px; }.helpIcon { display: flex; align-items: center; justify-content: center; flex: 0 0 42px; height: 42px; border: 1px solid #ffffff36; border-radius: 12px; color: #ccf6d7; }
 .helpMessage div { display: flex; flex-direction: column; gap: 4px; }.helpMessage strong { font-size: 15px; }.helpMessage div span { color: #b7d1c9; font-size: 11px; }
@@ -69,14 +69,67 @@
 .audienceGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }.audienceCard { position: relative; min-height: 300px; overflow: hidden; border-radius: 27px; background: #fff; }.audienceCopy { position: relative; z-index: 2; padding: 32px 34px; }.audienceCard h3 { color: #253b32; font-size: 22px; letter-spacing: -.03em; }.audienceCard p { max-width: 220px; margin-top: 10px; color: #879692; font-size: 12px; line-height: 1.4; }.audienceCard ul { display: flex; flex-direction: column; gap: 8px; list-style: none; margin: 18px 0 0; padding: 0; }.audienceCard li a { color: #8e9e98; font-size: 11px; }.audienceCard li a:hover { color: #2aae4d; }.audienceAction { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; margin-top: 20px; padding: 8px 14px; border-radius: 9999px; background: var(--green); color: #fff; font-size: 10px; font-weight: 700; transition: transform .2s; }
 .audienceArt { position: absolute; width: 48%; aspect-ratio: 1; right: -4%; bottom: -38%; border-radius: 50%; }.audienceArtPeople { background: #31bd51; }.audienceArtBusiness { background: #204f46; }.audienceArtCircle { position: absolute; display: flex; align-items: center; justify-content: center; width: 44%; aspect-ratio: 1; left: 23%; top: -11%; border: 10px solid #ffffff80; border-radius: 50%; background: linear-gradient(#e2e9f5, #a7b9c5); color: #eaf2f2; box-shadow: 0 15px 20px #1d48382e; }.audienceArtDot { position: absolute; width: 16%; aspect-ratio: 1; left: 35%; top: 39%; border: 8px solid #ffffffa8; border-radius: 50%; background: #2d8e58; }
 .footer { display: flex; align-items: center; gap: 25px; min-height: 95px; border-top: 1px solid #e8eeec; }.footerLogo { color: var(--dark); font-size: 17px; font-weight: 850; letter-spacing: -.07em; white-space: nowrap; }.footer p { flex: 1; color: #83938c; font-size: 11px; }.footer a { display: inline-flex; align-items: center; gap: 6px; color: #2a8d48; font-size: 11px; font-weight: 700; }
+@media (max-width: 1200px) {
+  .mainNav { display: none; }
+}
 @media (max-width: 980px) {
   .container { width: min(100% - 40px, 1180px); }.header { gap: 20px; }.mainNav { display: none; }.headerActions { margin-left: auto; }.hero { min-height: 390px; }.hero h1 { font-size: clamp(36px, 5vw, 50px); }.heroImage { width: 130%; }.featureCard { padding: 26px 23px; }.serviceCard { min-height: 400px; }.serviceCopy { padding: 30px; }
 }
 @media (max-width: 680px) {
+  .header { flex-wrap: wrap; gap: 12px; padding-block: 16px; }
+  .headerActions { width: 100%; justify-content: space-between; margin-left: 0; }
   .container { width: min(100% - 28px, 1180px); }.header { min-height: 68px; }.logo { font-size: 18px; }.headerQuiet { display: none; }.headerActions .action { min-height: 36px; padding: 8px 12px; font-size: 10px; }.filterNav { min-height: 57px; gap: 10px; }.filterScroll { flex: 1; }.filterAll { display: none; }
   .hero { display: flex; flex-direction: column; min-height: 0; border-radius: 23px; }.heroContent { padding: 34px 26px 0; }.hero h1 { max-width: 460px; font-size: clamp(38px, 9vw, 55px); }.hero p { max-width: 410px; margin-top: 16px; }.heroActions { margin-top: 0; padding-top: 27px; }.heroVisual { height: 270px; overflow: hidden; }.heroImage { width: 440px; max-width: 115%; margin: -30px 0 -85px; }.heroPagination { bottom: 12px; }
   .features { grid-template-columns: 1fr; gap: 12px; margin-top: 14px; }.featureCard { min-height: 0; padding: 22px; }.featureCard h2 { margin-top: 13px; }.featureCard p { max-width: none; }
   .helpBanner { align-items: flex-start; flex-direction: column; margin-top: 42px; padding: 20px; }.helpBanner .action { margin-left: 59px; }.services { grid-template-columns: 1fr; gap: 14px; margin-top: 42px; }.serviceCard { min-height: 375px; }.serviceCard h2 { font-size: 34px; }.serviceVisual { width: 64%; }.audience { padding: 62px 0; }.audienceTabs { width: 100%; justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }.audienceTab { white-space: nowrap; }.audienceGrid { grid-template-columns: 1fr; gap: 14px; }.audienceCard { min-height: 290px; }.footer { align-items: flex-start; flex-wrap: wrap; gap: 8px 20px; padding: 22px 0; }.footer p { flex-basis: calc(100% - 160px); }.footer a { width: 100%; }
+}
+
+.landing a:focus-visible,
+.landing button:focus-visible { outline: 3px solid #44be6a; outline-offset: 4px; }
+.serviceCopy h2 { text-wrap: balance; }
+
+:global(html[data-theme="dark"]) .landing {
+  --ink: #e3eee7;
+  --soft: #1d342c;
+  --landing-muted: #a6b8ad;
+  background: #0d1914;
+}
+:global(html[data-theme="dark"]) .header,
+:global(html[data-theme="dark"]) .filterNav { background: #0d1914; }
+:global(html[data-theme="dark"]) .filterNav,
+:global(html[data-theme="dark"]) .footer { border-color: #2a3f34; }
+:global(html[data-theme="dark"]) .logo,
+:global(html[data-theme="dark"]) .footerLogo,
+:global(html[data-theme="dark"]) .featureCard h2,
+:global(html[data-theme="dark"]) .audienceHeading h2,
+:global(html[data-theme="dark"]) .audienceCard h3 { color: #e3eee7; }
+:global(html[data-theme="dark"]) .logoMark { border-color: #a0c2ae; border-left-color: var(--green); }
+:global(html[data-theme="dark"]) .mainNav a,
+:global(html[data-theme="dark"]) .headerQuiet { color: #bccdc1; }
+:global(html[data-theme="dark"]) .featureCard,
+:global(html[data-theme="dark"]) .audienceCard,
+:global(html[data-theme="dark"]) .audienceTabs { background: #172b22; }
+:global(html[data-theme="dark"]) .featureIcon { color: #8ee69e; background: #284831; }
+:global(html[data-theme="dark"]) .filter,
+:global(html[data-theme="dark"]) .audienceTab { color: #b0c1b5; background: #20382c; }
+:global(html[data-theme="dark"]) .filter:hover,
+:global(html[data-theme="dark"]) .audienceTab:hover { color: #fff; background: #31523d; }
+:global(html[data-theme="dark"]) .filterActive,
+:global(html[data-theme="dark"]) .audienceTabActive,
+:global(html[data-theme="dark"]) .audienceTabActive:hover { color: #e6ffe9; background: #326444; }
+:global(html[data-theme="dark"]) .serviceLight { color: #e3eee7; background: linear-gradient(130deg, #20342e, #233d33); }
+:global(html[data-theme="dark"]) .serviceLight .outlineTag { color: #bcd5c6; border-color: #577263; }
+:global(html[data-theme="dark"]) .serviceLight p,
+:global(html[data-theme="dark"]) .audienceHeading p,
+:global(html[data-theme="dark"]) .audienceCard p,
+:global(html[data-theme="dark"]) .audienceCard li a,
+:global(html[data-theme="dark"]) .footer p { color: #a6b8ad; }
+:global(html[data-theme="dark"]) .audienceHeading > span,
+:global(html[data-theme="dark"]) .footer a { color: #7fd997; }
+:global(html[data-theme="dark"]) .audienceCard li a:hover { color: #a2edb4; }
+
+@media (prefers-reduced-motion: reduce) {
+  .action, .arrowButton, .audienceAction { transition: none; }
 }
 @media (max-width: 390px) {
   .headerActions .action { padding: 8px 10px; }.heroContent { padding: 30px 21px 0; }.hero h1 { font-size: 36px; }.heroActions { gap: 7px; }.heroActions .action { padding: 9px 13px; }.helpBanner .action { margin-left: 0; }.audienceArt { width: 55%; right: -15%; }

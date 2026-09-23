@@ -6,6 +6,23 @@
   font: 400 14px/1.6 Arial, sans-serif;
 }
 
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.toolbar > a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 650;
+}
+
+.toolbar > a:hover { text-decoration: underline; }
+
 .header {
   padding-bottom: 22px;
   border-bottom: 1px solid #dfe7ed;
@@ -137,3 +154,37 @@
   .tableWrap th,
   .tableWrap td { padding: 8px 9px; }
 }
+
+:global(html[data-theme="dark"]) .page,
+:global(html[data-theme="dark"]) .header h1,
+:global(html[data-theme="dark"]) .section h2,
+:global(html[data-theme="dark"]) .tableWrap tbody th,
+:global(html[data-theme="dark"]) .tableWrap code,
+:global(html[data-theme="dark"]) .formula {
+  color: var(--foreground);
+}
+
+:global(html[data-theme="dark"]) .eyebrow,
+:global(html[data-theme="dark"]) .header > p:last-child,
+:global(html[data-theme="dark"]) .note {
+  color: var(--muted-foreground);
+}
+
+:global(html[data-theme="dark"]) .header,
+:global(html[data-theme="dark"]) .section,
+:global(html[data-theme="dark"]) .tableWrap,
+:global(html[data-theme="dark"]) .tableWrap th,
+:global(html[data-theme="dark"]) .tableWrap td,
+:global(html[data-theme="dark"]) .formula {
+  border-color: var(--border);
+}
+
+:global(html[data-theme="dark"]) .tableWrap thead th,
+:global(html[data-theme="dark"]) .formula,
+:global(html[data-theme="dark"]) .depthExample {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+:global(html[data-theme="dark"]) .limits,
+:global(html[data-theme="dark"]) .note { border-left-color: #3bc157; }

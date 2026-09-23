@@ -1,4 +1,5 @@
 "use client";
+import { useI18n, usePreferences } from "@/components/preferences/PreferencesProvider";
 import { useEffect, useRef, useState } from "react";
 import cytoscape, { type Core } from "cytoscape";
 import { Maximize, Minus, Plus } from "lucide-react";
@@ -24,10 +25,12 @@ export default function NetworkGraph({
   colorBy: "role" | "cluster";
   onSelectGid: (gid: string) => void;
 }) {
+  const { t, intlLocale } = useI18n("workspace");
+  const { theme } = usePreferences();
   const container = useRef<HTMLDivElement>(null);
   const instance = useRef<Core | null>(null);
   const callback = useRef(onSelectGid);
-  const [edgeHint, setEdgeHint] = useState<string | null>(null);
+  const [edgeHint, setEdgeHint] = useState<{ source: string; target: string; amount: string; count: number } | null>(null);
   useEffect(() => {
     callback.current = onSelectGid;
   }, [onSelectGid]);
@@ -143,7 +146,7 @@ export default function NetworkGraph({
     cy.on("mouseover", "edge", (event) => {
       event.target.addClass("hover");
       setEdgeHint(
-        `${event.target.data("source")} → ${event.target.data("target")} · ${money(event.target.data("amount"))} · ${event.target.data("n_tx")} транзакций`,
+        { source: event.target.data("source"), target: event.target.data("target"), amount: event.target.data("amount"), count: event.target.data("n_tx") },
       );
     });
     cy.on("mouseout", "edge", (event) => {
@@ -164,16 +167,21 @@ export default function NetworkGraph({
   useEffect(() => {
     const cy = instance.current;
     if (!cy) return;
+    cy.style()
+      .selector("node").style({ color: theme === "dark" ? "#d8e8df" : "#41534e", "text-background-color": theme === "dark" ? "#172b24" : "#fafcfb" })
+      .selector("edge").style({ "line-color": theme === "dark" ? "#5b7c6d" : "#bac9c0", "target-arrow-color": theme === "dark" ? "#93bfa9" : "#7f988a" })
+      .selector("edge.hover").style({ "line-color": theme === "dark" ? "#5ed899" : "#138576", "target-arrow-color": theme === "dark" ? "#5ed899" : "#138576" })
+      .update();
     cy.batch(() =>
       cy.nodes().forEach((node) => {
         const color = node.data(
           colorBy === "role" ? "roleColor" : "clusterColor",
         );
         node.style("background-color", color);
-        node.style("border-color", node.hasClass("seed") ? "#345c52" : color);
+        node.style("border-color", node.hasClass("seed") ? (theme === "dark" ? "#c0e7ce" : "#345c52") : color);
       }),
     );
-  }, [colorBy, data]);
+  }, [colorBy, data, theme]);
   const zoom = (factor: number) => {
     const cy = instance.current;
     if (cy)
@@ -188,22 +196,22 @@ export default function NetworkGraph({
         ref={container}
         className="network-canvas"
         role="img"
-        aria-label={`Направленный граф: ${data.nodes.length} узлов, ${data.edges.length} связей. Выбрать узел с клавиатуры можно в списке под графом.`}
+        aria-label={t("graph.canvasLabel", { nodes: data.nodes.length, edges: data.edges.length })}
       />
       <div className="graph-overlay">
         <span>
           <i />
-          Локальная окрестность
+          {t("graph.neighborhood")}
         </span>
         <small>
-          {data.nodes.length} узлов · {data.edges.length} связей
+          {t("graph.counts", { nodes: data.nodes.length, edges: data.edges.length })}
         </small>
       </div>
       <div className="zoom-controls">
         <Button
           variant="outline"
           size="icon"
-          aria-label="Увеличить граф"
+          aria-label={t("graph.zoomIn")}
           onClick={() => zoom(1.2)}
         >
           <Plus size={17} />
@@ -211,7 +219,7 @@ export default function NetworkGraph({
         <Button
           variant="outline"
           size="icon"
-          aria-label="Уменьшить граф"
+          aria-label={t("graph.zoomOut")}
           onClick={() => zoom(0.8)}
         >
           <Minus size={17} />
@@ -219,7 +227,7 @@ export default function NetworkGraph({
         <Button
           variant="outline"
           size="icon"
-          aria-label="Показать весь подграф"
+          aria-label={t("graph.fit")}
           onClick={() => {
             if (instance.current) fitGraph(instance.current);
           }}
@@ -229,14 +237,14 @@ export default function NetworkGraph({
       </div>
       {edgeHint && (
         <div className="edge-hint" role="status">
-          {edgeHint}
+          {edgeHint.source} → {edgeHint.target} · {money(edgeHint.amount, true, intlLocale)} · {t("transactions.count", { count: edgeHint.count })}
         </div>
       )}
       {data.edges.length === 0 && (
         <p className="graph-empty-note">
           {data.nodes[0]?.flags.includes("isolated")
-            ? "У этого узла нет наблюдаемых связей."
-            : "В выбранной окрестности нет связей. Попробуйте увеличить число переходов."}
+            ? t("graph.isolated")
+            : t("graph.noEdges")}
         </p>
       )}
     </div>

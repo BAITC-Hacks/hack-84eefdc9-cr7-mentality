@@ -1,4 +1,7 @@
+"use client";
+
 import type { EvidenceFact, Finding, Gid } from "../../contracts/api";
+import { useI18n } from "@/components/preferences/PreferencesProvider";
 import { EvidenceLink } from "./EvidenceLink";
 import styles from "./AnalystPanel.module.css";
 
@@ -9,6 +12,7 @@ type FindingCardProps = {
 };
 
 export function FindingCard({ finding, evidence, onSelectGid }: FindingCardProps) {
+  const { t } = useI18n("extras");
   const factsById = new Map(evidence.map((fact) => [fact.id, fact]));
 
   return (
@@ -26,7 +30,7 @@ export function FindingCard({ finding, evidence, onSelectGid }: FindingCardProps
           })}
         </ul>
       ) : (
-        <p className={styles.muted}>Для этого вывода нет подтверждённых фактов.</p>
+        <p className={styles.muted}>{t("analyst.noEvidence")}</p>
       )}
     </article>
   );

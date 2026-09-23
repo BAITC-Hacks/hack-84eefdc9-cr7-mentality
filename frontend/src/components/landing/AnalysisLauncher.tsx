@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useI18n } from "@/components/preferences/PreferencesProvider";
+import { PreferencesControls } from "@/components/preferences/PreferencesControls";
 import type { AnalysisId } from "../../contracts/api";
 import { startAnalysis } from "../../lib/analysis-api";
 import styles from "./AnalysisLauncher.module.css";
@@ -10,6 +12,7 @@ type AnalysisLauncherProps = {
 };
 
 export function AnalysisLauncher({ onAnalysisStarted }: AnalysisLauncherProps) {
+  const { t, intlLocale } = useI18n("landing");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [readyId, setReadyId] = useState<AnalysisId | null>(null);
@@ -28,14 +31,8 @@ export function AnalysisLauncher({ onAnalysisStarted }: AnalysisLauncherProps) {
       const result = await startAnalysis(controller.signal);
       setReadyId(result.analysis_id);
       onAnalysisStarted(result.analysis_id);
-    } catch (requestError) {
-      setError(
-        controller.signal.aborted
-          ? "Расчёт занял больше пяти минут. Можно повторить запуск."
-          : requestError instanceof Error
-            ? requestError.message
-            : "Не удалось запустить анализ. Проверьте соединение и повторите попытку.",
-      );
+    } catch {
+      setError(controller.signal.aborted ? "launcher.error.timeout" : "launcher.error.failed");
     } finally {
       window.clearTimeout(timeoutId);
       setIsLoading(false);
@@ -44,31 +41,31 @@ export function AnalysisLauncher({ onAnalysisStarted }: AnalysisLauncherProps) {
 
   return (
     <main className={styles.page}>
+      <div className={styles.preferences}><PreferencesControls /></div>
       <section className={styles.content} aria-labelledby="launch-title">
         <div className={styles.intro}>
-          <p className={styles.kicker}>Анализ направленных переводов</p>
-          <h1 id="launch-title">Исследуйте связи и потоки средств</h1>
+          <p className={styles.kicker}>{t("launcher.kicker")}</p>
+          <h1 id="launch-title">{t("launcher.title")}</h1>
           <p className={styles.description}>
-            Запустите воспроизводимый расчёт, чтобы перейти к узлам с наивысшим приоритетом,
-            направленным связям и подтверждающим фактам.
+            {t("launcher.description")}
           </p>
         </div>
 
         <section className={styles.dataset} aria-labelledby="dataset-title">
           <div className={styles.datasetHeader}>
             <div>
-              <p className={styles.sectionLabel}>Набор данных</p>
-              <h2 id="dataset-title">HackAlem · июль 2026</h2>
+              <p className={styles.sectionLabel}>{t("launcher.dataset")}</p>
+              <h2 id="dataset-title">{t("launcher.datasetName")}</h2>
             </div>
-            <span className={styles.datasetStatus}>Готов к расчёту</span>
+            <span className={styles.datasetStatus}>{t("launcher.ready")}</span>
           </div>
           <dl className={styles.stats}>
-            <div><dt>Узлы</dt><dd>2 248</dd></div>
-            <div><dt>Направленные связи</dt><dd>3 119</dd></div>
-            <div><dt>Транзакции</dt><dd>4 840</dd></div>
+            <div><dt>{t("launcher.nodes")}</dt><dd>{new Intl.NumberFormat(intlLocale).format(2248)}</dd></div>
+            <div><dt>{t("launcher.edges")}</dt><dd>{new Intl.NumberFormat(intlLocale).format(3119)}</dd></div>
+            <div><dt>{t("launcher.transactions")}</dt><dd>{new Intl.NumberFormat(intlLocale).format(4840)}</dd></div>
           </dl>
           <p className={styles.datasetNote}>
-            Порог отображения, внутрибанковское покрытие и границы выгрузки будут указаны в анализе.
+            {t("launcher.datasetNote")}
           </p>
         </section>
 
@@ -79,22 +76,22 @@ export function AnalysisLauncher({ onAnalysisStarted }: AnalysisLauncherProps) {
             onClick={handleStart}
             type="button"
           >
-            {isLoading ? "Выполняется расчёт..." : "Запустить анализ"}
+            {t(isLoading ? "launcher.calculating" : "launcher.start")}
           </button>
-          <a className={styles.secondaryAction} href="/methodology">Методология</a>
+          <a className={styles.secondaryAction} href="/methodology">{t("nav.methodology")}</a>
         </div>
 
         {isLoading && (
           <p className={styles.status} role="status" aria-live="polite">
-            Считаю метрики и кластеры. Это может занять несколько минут.
+            {t("launcher.progress")}
           </p>
         )}
-        {readyId && <p className={styles.success} role="status">Анализ готов: {readyId}</p>}
-        {error && <p className={styles.error} role="alert">{error}</p>}
+        {readyId && <p className={styles.success} role="status">{t("launcher.success", { id: readyId })}</p>}
+        {error && <p className={styles.error} role="alert">{t(error)}</p>}
       </section>
 
       <footer className={styles.footer}>
-        Результаты — структурные сигналы для ручной проверки, не вывод о виновности.
+        {t("launcher.disclaimer")}
       </footer>
     </main>
   );

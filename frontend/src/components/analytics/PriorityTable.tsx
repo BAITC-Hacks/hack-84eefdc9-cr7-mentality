@@ -1,3 +1,5 @@
+"use client";
+import { useI18n } from "@/components/preferences/PreferencesProvider";
 import {
   ArrowDownWideNarrow,
   ChevronLeft,
@@ -13,34 +15,37 @@ export function PriorityTable({
   selectedGid,
   onSelectGid,
   onPage,
+  isDemo = false,
 }: {
   data: DashboardResponse;
+  isDemo?: boolean;
   selectedGid: string | null;
   onSelectGid: (gid: string) => void;
   onPage: (offset: number) => void;
 }) {
+  const { t, intlLocale } = useI18n("workspace");
   return (
     <section
       className="panel priority-panel"
-      aria-label="Рейтинг приоритета проверки"
+      aria-label={t("ranking.label")}
     >
       <div className="panel-heading">
         <div>
           <h2>
-            Приоритет проверки{" "}
+            {t("ranking.title")}{" "}
             <span className="count-tag">{data.ranking.total}</span>
           </h2>
-          <p>Узлы, с которых стоит начать</p>
+          <p>{t("ranking.description")}</p>
         </div>
         <ArrowDownWideNarrow size={18} />
       </div>
       <div className="ranking-head">
-        <span>УЗЕЛ / РОЛЬ</span>
-        <span>SCORE</span>
+        <span>{t("ranking.nodeRole")}</span>
+        <span>{t("ranking.score")}</span>
       </div>
       <div className="ranking-list">
         {data.ranking.items.length === 0 ? (
-          <p className="empty-text">В этом анализе нет узлов.</p>
+          <p className="empty-text">{t("ranking.empty")}</p>
         ) : (
           data.ranking.items.map((node) => (
             <button
@@ -48,18 +53,18 @@ export function PriorityTable({
               className={`ranking-row ${selectedGid === node.gid ? "selected" : ""}`}
               onClick={() => onSelectGid(node.gid)}
               aria-pressed={selectedGid === node.gid}
-              title={node.why}
+              title={isDemo ? t(node.priority_score === 0 ? "graph.isolated" : "demo.why") : node.why}
             >
               <span className="rank">{String(node.rank).padStart(2, "0")}</span>
               <span className="rank-node">
                 <strong className="mono">{node.gid}</strong>
                 <span>
                   <i style={{ background: roles[node.role].color }} />
-                  {roles[node.role].label}
+                  {t(`role.${node.role}`)}
                 </span>
               </span>
               <span className="rank-score">
-                {scoreLabel(node.priority_score)}
+                {scoreLabel(node.priority_score, intlLocale)}
                 <MoveUpRight size={12} />
               </span>
             </button>
@@ -68,18 +73,13 @@ export function PriorityTable({
       </div>
       <div className="pagination">
         <span>
-          {data.ranking.total ? data.ranking.offset + 1 : 0}–
-          {Math.min(
-            data.ranking.offset + data.ranking.items.length,
-            data.ranking.total,
-          )}{" "}
-          из {data.ranking.total}
+          {t("ranking.page", { start: data.ranking.total ? data.ranking.offset + 1 : 0, end: Math.min(data.ranking.offset + data.ranking.items.length, data.ranking.total), total: data.ranking.total })}
         </span>
         <div>
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Предыдущие узлы"
+            aria-label={t("ranking.previous")}
             disabled={data.ranking.offset === 0}
             onClick={() => onPage(data.ranking.offset - data.ranking.limit)}
           >
@@ -88,7 +88,7 @@ export function PriorityTable({
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Следующие узлы"
+            aria-label={t("ranking.next")}
             disabled={
               data.ranking.offset + data.ranking.limit >= data.ranking.total
             }
@@ -98,7 +98,7 @@ export function PriorityTable({
           </Button>
         </div>
       </div>
-      <p className="panel-footnote">Score — приоритет ручной проверки.</p>
+      <p className="panel-footnote">{t("ranking.note")}</p>
     </section>
   );
 }

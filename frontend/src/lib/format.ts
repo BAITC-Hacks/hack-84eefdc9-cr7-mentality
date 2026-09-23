@@ -1,39 +1,34 @@
-export const integer = (value: number) =>
-  new Intl.NumberFormat("ru-RU").format(value);
+export const integer = (value: number, locale = "ru-RU") =>
+  new Intl.NumberFormat(locale).format(value);
 /** Decimal strings stay exact, including values beyond Number.MAX_SAFE_INTEGER. */
-export function money(value: string, withCurrency = true) {
+export function money(value: string, withCurrency = true, locale = "ru-RU") {
   const match = /^(\d+)(?:\.(\d+))?$/.exec(value);
   if (!match) return "—";
   const fraction = (match[2] || "").padEnd(3, "0");
   let minor = BigInt(match[1]) * 100n + BigInt(fraction.slice(0, 2));
   if (fraction[2] >= "5") minor += 1n;
-  const whole = new Intl.NumberFormat("ru-RU").format(minor / 100n);
-  return `${whole},${String(minor % 100n).padStart(2, "0")}${withCurrency ? " ₸" : ""}`;
+  const whole = new Intl.NumberFormat(locale).format(minor / 100n);
+  const separator = new Intl.NumberFormat(locale).formatToParts(1.1).find((part) => part.type === "decimal")?.value ?? ".";
+  return `${whole}${separator}${String(minor % 100n).padStart(2, "0")}${withCurrency ? " ₸" : ""}`;
 }
-export function compactMoney(value: string) {
+export function compactMoney(value: string, locale = "ru-RU") {
   const whole = BigInt(value.split(".")[0] || "0");
-  const unit =
-    whole >= 1_000_000_000n
-      ? ([1_000_000_000n, "млрд"] as const)
-      : whole >= 1_000_000n
-        ? ([1_000_000n, "млн"] as const)
-        : whole >= 1_000n
-          ? ([1_000n, "тыс."] as const)
-          : null;
-  if (!unit) return money(value);
-  return `${whole / unit[0]},${((whole % unit[0]) * 10n) / unit[0]} ${unit[1]} ₸`;
+  if (whole < 1_000n) return money(value, true, locale);
+  return `${new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 }).format(whole)} ₸`;
 }
-export function dateLabel(value: string) {
+export function dateLabel(value: string, locale = "ru-RU") {
   const parsed = new Date(`${value}T00:00:00Z`);
   return Number.isNaN(parsed.getTime())
     ? value
-    : new Intl.DateTimeFormat("ru-RU", {
+    : new Intl.DateTimeFormat(locale, {
         day: "numeric",
         month: "short",
         timeZone: "UTC",
       }).format(parsed);
 }
-export const scoreLabel = (value: number) => value.toFixed(3);
+export const scoreLabel = (value: number, locale?: string) => locale
+  ? new Intl.NumberFormat(locale, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).format(value)
+  : value.toFixed(3);
 export function validateGid(value: string) {
   const raw = value.trim();
   if (!/^-?(0|[1-9][0-9]*)$/.test(raw))

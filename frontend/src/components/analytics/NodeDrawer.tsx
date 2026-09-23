@@ -1,3 +1,5 @@
+"use client";
+import { useI18n } from "@/components/preferences/PreferencesProvider";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -9,26 +11,20 @@ import {
 import type { NodeDrawerProps } from "@/features/workspace/types";
 import { roles } from "@/lib/role-colors";
 import { integer, money, scoreLabel } from "@/lib/format";
-const featureLabels = {
-  inflow: "Входящий поток",
-  in_degree: "Число плательщиков",
-  betweenness: "Посредничество",
-  seed_reach: "Достижимость от seed",
-  role: "Роль",
-};
 export function NodeDrawer({
   node,
   children,
-}: NodeDrawerProps & { children?: React.ReactNode }) {
+  isDemo = false,
+}: NodeDrawerProps & { children?: React.ReactNode; isDemo?: boolean }) {
+  const { t, intlLocale, locale } = useI18n("workspace");
   if (!node)
     return (
       <aside className="panel node-panel">
         <div className="empty-node">
           <CircleDot size={30} />
-          <h2>Выберите узел</h2>
+          <h2>{t("node.select")}</h2>
           <p>
-            Нажмите на узел в графе или таблице, чтобы увидеть признаки и
-            ограничения.
+            {t("node.selectHint")}
           </p>
         </div>
       </aside>
@@ -37,10 +33,10 @@ export function NodeDrawer({
   return (
     <aside
       className="panel node-panel"
-      aria-label={`Карточка узла ${node.gid}`}
+      aria-label={t("node.label", { gid: node.gid })}
     >
       <div className="panel-heading">
-        <span className="eyebrow">ПРОФИЛЬ УЗЛА</span>
+        <span className="eyebrow">{t("node.profile")}</span>
         <ExternalLink size={16} />
       </div>
       <div className="node-identity">
@@ -52,7 +48,7 @@ export function NodeDrawer({
             <CircleDot size={25} />
           </span>
           <div>
-            <span className="muted">Идентификатор</span>
+            <span className="muted">{t("node.identifier")}</span>
             <h2 className="mono">{node.gid}</h2>
           </div>
         </div>
@@ -62,18 +58,18 @@ export function NodeDrawer({
             style={{ background: role.soft, color: role.color }}
           >
             <i style={{ background: role.color }} />
-            {role.label}
+            {t(`role.${node.role}`)}
           </span>
-          {node.is_seed && <span className="badge">Seed</span>}
-          <span className="badge">Глубина {node.depth}</span>
-          <span className="badge">Кластер {node.cluster_id}</span>
+          {node.is_seed && <span className="badge">{t("node.seed")}</span>}
+          <span className="badge">{t("node.depth", { depth: node.depth })}</span>
+          <span className="badge">{t("cluster", { id: node.cluster_id })}</span>
         </div>
       </div>
       <div className="node-section">
         <div className="section-title">
-          Приоритет проверки{" "}
+          {t("ranking.title")}{" "}
           <strong>
-            {scoreLabel(node.priority_score)}
+            {scoreLabel(node.priority_score, intlLocale)}
             <span> / 1</span>
           </strong>
         </div>
@@ -81,51 +77,50 @@ export function NodeDrawer({
           <span style={{ width: `${node.priority_score * 100}%` }} />
         </div>
         <p className="microcopy">
-          Выраженность признаков роли: {scoreLabel(node.role_score)}.
-          Эвристическая оценка, не вероятность.
+          {t("node.scoreHint", { score: scoreLabel(node.role_score, intlLocale) })}
         </p>
       </div>
       <div className="node-section">
-        <h3>Наблюдаемые потоки</h3>
+        <h3>{t("node.flows")}</h3>
         <div className="money-row">
           <span>
             <ArrowDownLeft size={15} />
-            Входящий
+            {t("node.incoming")}
           </span>
-          <strong>{money(node.metrics.observed_in_kzt)}</strong>
+          <strong>{money(node.metrics.observed_in_kzt, true, intlLocale)}</strong>
         </div>
         <div className="money-row">
           <span>
             <ArrowUpRight size={15} />
-            Исходящий
+            {t("node.outgoing")}
           </span>
-          <strong>{money(node.metrics.observed_out_kzt)}</strong>
+          <strong>{money(node.metrics.observed_out_kzt, true, intlLocale)}</strong>
         </div>
         <div className="node-metrics">
           <div>
-            <strong>{integer(node.metrics.in_degree)}</strong>
-            <span>Плательщиков</span>
+            <strong>{integer(node.metrics.in_degree, intlLocale)}</strong>
+            <span>{t("node.payers")}</span>
           </div>
           <div>
-            <strong>{integer(node.metrics.out_degree)}</strong>
-            <span>Получателей</span>
+            <strong>{integer(node.metrics.out_degree, intlLocale)}</strong>
+            <span>{t("node.recipients")}</span>
           </div>
           <div>
-            <strong>{integer(node.metrics.reachable_seed_count)}</strong>
-            <span>Других seed</span>
+            <strong>{integer(node.metrics.reachable_seed_count, intlLocale)}</strong>
+            <span>{t("node.otherSeeds")}</span>
           </div>
         </div>
         <dl className="minor-metrics">
           <div>
-            <dt>Betweenness</dt>
-            <dd>{node.metrics.betweenness.toFixed(4)}</dd>
+            <dt>{t("node.betweenness")}</dt>
+            <dd>{new Intl.NumberFormat(intlLocale, { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(node.metrics.betweenness)}</dd>
           </div>
           <div>
-            <dt>Отношение исходящего к входящему</dt>
+            <dt>{t("node.ratio")}</dt>
             <dd>
               {node.metrics.observed_out_in_ratio === null
-                ? "Не определено"
-                : node.metrics.observed_out_in_ratio.toFixed(3)}
+                ? t("node.undefined")
+                : scoreLabel(node.metrics.observed_out_in_ratio, intlLocale)}
             </dd>
           </div>
         </dl>
@@ -133,31 +128,30 @@ export function NodeDrawer({
       <div className="node-section">
         <h3>
           <Info size={15} />
-          Основание роли
+          {t("node.evidence")}
         </h3>
-        <p className="evidence-text">{node.evidence}</p>
+        {!isDemo && locale !== "ru" && <p className="microcopy">{t("node.originalText")}</p>}
+        <p className="evidence-text">{isDemo ? t(node.flags.includes("isolated") ? "demo.evidenceIsolated" : node.flags.includes("depth4_censored") ? "demo.evidenceDepth" : "demo.evidence") : node.evidence}</p>
         <p className="microcopy">
-          Правило: {node.rule_id}. Метрики рассчитаны по полному анализу.
+          {t("node.rule", { rule: node.rule_id })}
         </p>
         {node.flags.includes("self_transfers_excluded") && (
           <p className="microcopy">
-            Переводы самому себе сохранены в графе и исключены из структурных
-            метрик и ролей.
+            {t("node.selfTransfers")}
           </p>
         )}
         {node.priority_breakdown.length > 0 && (
           <details className="breakdown">
-            <summary>Что формирует приоритет</summary>
+            <summary>{t("node.breakdown")}</summary>
             {node.priority_breakdown.map((item, i) => (
               <div key={`${item.feature}-${i}`}>
                 <span>
-                  {featureLabels[item.feature]}
+                  {t(`feature.${item.feature}`)}
                   <small>
-                    Нормированное значение: {scoreLabel(item.normalized_value)}{" "}
-                    · Вес: {item.weight}
+                    {t("node.normalized", { value: scoreLabel(item.normalized_value, intlLocale), weight: new Intl.NumberFormat(intlLocale).format(item.weight) })}
                   </small>
                 </span>
-                <strong>+{scoreLabel(item.contribution)}</strong>
+                <strong>+{scoreLabel(item.contribution, intlLocale)}</strong>
               </div>
             ))}
           </details>
@@ -170,28 +164,25 @@ export function NodeDrawer({
         <div className="node-warnings">
           <h3>
             <ShieldAlert size={15} />
-            Ограничения наблюдения
+            {t("node.limitations")}
           </h3>
           {node.flags.includes("depth4_censored") && (
             <p>
-              На 4-м колене исходящие неизвестны. Отсутствие переводов не
-              подтверждает удержание денег или конечного получателя.
+              {t("node.depthLimit")}
             </p>
           )}
           {node.flags.includes("seed_inflow_incomplete") && (
             <p>
-              У исходного seed входящие неполны. Отношение потоков не участвует
-              в определении роли.
+              {t("node.seedLimit")}
             </p>
           )}
           {node.flags.includes("outflow_exceeds_observed_inflow") && (
             <p>
-              Исходящий поток больше наблюдаемого входящего. Это указывает на
-              неполноту покрытия.
+              {t("node.outflowLimit")}
             </p>
           )}
           {node.flags.includes("isolated") && (
-            <p>Изолированный узел сохранён в анализе. Связей в выгрузке нет.</p>
+            <p>{t("node.isolatedLimit")}</p>
           )}
         </div>
       )}

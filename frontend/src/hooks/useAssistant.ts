@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useI18n } from "@/components/preferences/PreferencesProvider";
 import type { AnalysisId, AssistantResponse, Gid } from "../contracts/api";
-import { assistantModeLabel, buildAssistantRequest } from "../lib/assistant-request";
+import { buildAssistantRequest } from "../lib/assistant-request";
 import { postAssistant } from "../lib/assistant-api";
 
 export type AssistantValidationError =
@@ -9,14 +10,8 @@ export type AssistantValidationError =
   | "select_node"
   | "too_many_nodes";
 
-const validationMessages: Record<AssistantValidationError, string> = {
-  question_required: "Введите вопрос.",
-  question_too_long: "Вопрос не должен превышать 1 000 символов.",
-  select_node: "Выберите узел в графе, чтобы задать вопрос.",
-  too_many_nodes: "Выберите не более пяти узлов.",
-};
-
 export function useAssistant(analysisId: AnalysisId) {
+  const { t } = useI18n("extras");
   const [response, setResponse] = useState<AssistantResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<AssistantValidationError | null>(null);
@@ -52,8 +47,8 @@ export function useAssistant(analysisId: AnalysisId) {
         if (controller.signal.aborted || requestId !== requestIdRef.current) return;
         setError(
           requestError instanceof Error
-            ? requestError.message
-            : "Не удалось получить пояснение. Повторите запрос.",
+            ? requestError.message || "request_failed"
+            : "request_failed",
         );
       } finally {
         if (requestId === requestIdRef.current) setIsLoading(false);
@@ -64,10 +59,11 @@ export function useAssistant(analysisId: AnalysisId) {
 
   return {
     response,
-    error,
-    validationMessage: validationError ? validationMessages[validationError] : null,
+    error: error ? t("analyst.error") : null,
+    errorDetail: error && !["Не удалось получить пояснение. Повторите запрос.", "Failed to fetch", "fetch failed", "request_failed"].includes(error) ? error : null,
+    validationMessage: validationError ? t(`analyst.validation.${validationError}`) : null,
     isLoading,
     ask,
-    modeLabel: response ? assistantModeLabel(response.mode, response.fallback_reason) : null,
+    modeLabel: response ? t(response.mode === "live" ? "analyst.mode.live" : response.fallback_reason === "disabled" ? "analyst.mode.rules" : "analyst.mode.fallback") : null,
   };
 }
