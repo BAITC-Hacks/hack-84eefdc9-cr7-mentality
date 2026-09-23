@@ -11,7 +11,7 @@ Hackathon team repository for CR7 Mentality
 - [Общие TypeScript-типы фронтенда](frontend/src/contracts/api.ts)
 - Исходные Parquet: `backend/data/`
 
-Бэкенд реализован; интерфейс Next.js разрабатывается параллельно.
+Реализованы FastAPI-бэкенд и интерфейс Next.js: лендинг, граф, поиск клиентов, рейтинг, пояснения ассистента и CSV-выгрузки.
 
 ## Быстрый запуск бэкенда
 
@@ -26,6 +26,20 @@ python -m app.pipeline --data-dir data --out-dir artifacts --seed 42
 ```
 
 На Windows Python окружения — `.venv/Scripts/python.exe`, на Linux/macOS — `.venv/bin/python`. Выходы: `backend/artifacts/nodes_roles.csv`, `clusters.csv`, `top_nodes.csv`. Для HTTP API: `python -m uvicorn app.main:app --host 127.0.0.1 --port 8000`, интерактивные схемы доступны на `http://127.0.0.1:8000/docs`.
+
+Для локальной настройки скопируйте `backend/.env.example` в `backend/.env`, если файл ещё не создан. FastAPI автоматически читает этот файл при запуске; переменные процесса имеют приоритет. Для OpenAI укажите `OPENAI_API_KEY`, доступную вашему API-проекту модель в `OPENAI_MODEL` и `LLM_ENABLED=true`, затем перезапустите API. При `LLM_ENABLED=false` ассистент показывает рассчитанные факты без обращения к OpenAI. Ключ хранится только в `backend/.env`, который исключён из Git.
+
+## Запуск интерфейса
+
+Во втором терминале из корня репозитория:
+
+```bash
+cd frontend
+npm ci
+npm run dev
+```
+
+Откройте `http://localhost:3000`, нажмите «Начать анализ», затем «Запустить анализ». Все экраны по умолчанию обращаются к `http://localhost:8000`. Чтобы изменить адрес, создайте `frontend/.env.local` по `frontend/.env.example`, задайте `NEXT_PUBLIC_API_BASE_URL` и перезапустите Next.js. Локальный origin интерфейса должен входить в `CORS_ORIGINS` бэкенда.
 
 На выданном наборе: 2 248 узлов, 3 119 рёбер, 4 840 транзакций; 86 кластеров и 35 слабосвязных компонент, включая 19 изолированных seed. Сумма транзакций — `365890012.01 KZT` (в ТЗ округлено до целого). Локальный расчёт уложился в лимит 5 минут.
 

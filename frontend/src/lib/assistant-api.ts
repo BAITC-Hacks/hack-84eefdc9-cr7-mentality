@@ -1,4 +1,5 @@
 import type { AnalysisId, AssistantRequest, AssistantResponse } from "../contracts/api";
+import { endpoint } from "./api";
 
 type ApiErrorBody = {
   error?: {
@@ -11,9 +12,8 @@ export async function postAssistant(
   request: AssistantRequest,
   signal: AbortSignal,
 ): Promise<AssistantResponse> {
-  const baseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/+$/, "");
   const response = await fetch(
-    `${baseUrl}/api/v1/analyses/${encodeURIComponent(analysisId)}/assistant`,
+    endpoint(`/analyses/${encodeURIComponent(analysisId)}/assistant`),
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },

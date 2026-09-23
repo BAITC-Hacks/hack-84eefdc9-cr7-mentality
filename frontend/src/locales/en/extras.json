@@ -90,6 +90,8 @@
   "analyst.explanation": "Explanation",
   "analyst.originalLanguage": "The explanation and supporting facts are preserved in their original language.",
   "analyst.fallback": "The AI service is unavailable. Analysis rules and facts are shown below.",
+  "analyst.fallbackDisabled": "AI explanations are disabled. The analysis rules and computed facts are shown below.",
+  "analyst.fallbackTimeout": "The AI did not respond in time. Please retry your request; the computed facts are available below.",
   "analyst.insufficientData": "There is not enough data to answer this question.",
   "analyst.limits": "Data limitations",
   "analyst.nextSteps": "What to review next",
